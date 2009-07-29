@@ -16,7 +16,7 @@ setup(name='vigilo-common',
         namespace_packages = [
             'vigilo',
             ],
-        py_modules=[
+        packages=[
             'vigilo.common',
             ],
         entry_points={
