@@ -31,6 +31,7 @@ Impl notes:
 import os
 import re
 import runpy
+import sys
 import UserDict
 
 # Uppercase alnum, starts with alpha, underscores between alnums.
@@ -63,16 +64,15 @@ settings = Settings(settings_raw)
 
 def main():
     from optparse import OptionParser
-    import sys
 
     parser = OptionParser()
     parser.add_option('-g', '--get', dest='get', metavar='SETTING_NAME')
     (opts, args) = parser.parse_args()
     if opts.get is None:
-        return
+        return -2
     val = settings[opts.get]
     sys.stdout.write('%s\n' % val)
 
 if __name__ == '__main__':
-    main()
+    sys.exit(main())
 
