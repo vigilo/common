@@ -8,7 +8,11 @@ Sets up logging, with twisted and multiprocessing integration.
 import logging
 import runpy
 
-from vigilo.common.conf import settings
+"""
+Impl notes:
+    Can't use any Vigilo code. Only settings is loaded earlier.
+"""
+from vigilo.common.conf import settings, log_initialized
 
 __all__ = ( 'get_logger', )
 
@@ -32,5 +36,13 @@ def get_logger(name):
         for plugin_name in settings['LOGGING_PLUGINS']:
             #load_plugin(plugin_name, False) # Needs registry
             runpy.run_module(plugin_name)['register'](None)
+        plugins_loaded = True
+        # Configure the root logger
+        # A stderr streamHandler is used by default.
+        # Again, basicConfig assumes no prior unqualified uses of logging.{info,debug…}
+        logging.basicConfig(**settings['LOGGING_SETTINGS'])
+        for k, v in settings['LOGGING_LEVELS'].iteritems():
+            get_logger(k).setLevel(v)
+        log_initialized()
     return logging.getLogger(name)
 

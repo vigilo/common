@@ -26,10 +26,14 @@ Impl notes:
     a ConfigParser.SafeConfigParser would have worked as well,
     we'd replace settings.py in PYTHONPATH with a settings.cfg in PWD.
     I guess I'm too used to django.
+
+We can't import any other Vigilo code here.
+This is because Vigilo code may log or require settings for some other reason.
 """
 
 import os
 import re
+import logging
 import runpy
 import sys
 import UserDict
@@ -61,6 +65,19 @@ VIGILO_SETTINGS_MODULE = os.environ.get('VIGILO_SETTINGS_MODULE', 'settings')
 
 settings_raw = runpy.run_module(VIGILO_SETTINGS_MODULE)
 settings = Settings(settings_raw)
+
+def log_initialized():
+    """
+    A backdoor for logging to tell us it was initialized, so that
+    we can log our own initialization.
+    """
+
+    from vigilo.common.logging import get_logger
+    LOGGER = get_logger(__name__)
+    LOGGER.info('Loaded settings module %r from path %r',
+            VIGILO_SETTINGS_MODULE,
+            settings_raw.get('__file__'),
+            )
 
 def main():
     from optparse import OptionParser
