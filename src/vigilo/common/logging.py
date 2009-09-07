@@ -7,6 +7,7 @@ Sets up logging, with twisted and multiprocessing integration.
 
 import logging
 import runpy
+from logging.handlers import SysLogHandler
 
 """
 Impl notes:
@@ -42,7 +43,19 @@ def get_logger(name):
         # Again, basicConfig assumes no prior unqualified uses of logging.{info,debug…}
         logging.basicConfig(**settings['LOGGING_SETTINGS'])
         for k, v in settings['LOGGING_LEVELS'].iteritems():
+            if settings['LOGGING_SYSLOG']:
+                log = logging.getLogger(k)
+                handler = SysLogHandler(address="/dev/log", facility='daemon')
+                #handler = logging.FileHandler('/tmp/plop')
+                log.addHandler(handler)
             get_logger(k).setLevel(v)
         log_initialized()
-    return logging.getLogger(name)
+
+    log = logging.getLogger(name)
+    if settings['LOGGING_SYSLOG']:
+        handler = SysLogHandler(address="/dev/log", facility='daemon')
+        #handler = logging.FileHandler('/tmp/plop')
+        log.addHandler(handler)
+    
+    return log 
 
