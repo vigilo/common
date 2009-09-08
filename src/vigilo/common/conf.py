@@ -3,7 +3,7 @@
 A django-inspired settings module.
 
 Use dictionary access on the 'settings' object.
-Define VIGILO_SETTINGS_MODULE in the environment to a valid file path
+Define VIGILO_SETTINGS in the environment to a valid file path
 that will be imported.
 
 The settings file will be searched in a list of directories defined in
@@ -32,7 +32,7 @@ C{settings.load("connector")} looks for:
   - ~/.vigilo/connector/settings.py
   - ./connector/settings.py
 
-If you define VIGILO_SETTINGS_MODULE to a valid filename, it will override the
+If you define VIGILO_SETTINGS to a valid filename, it will override the
 search mechanism and be used instead.
 
 Command-line usage:
@@ -109,7 +109,7 @@ class Settings(UserDict.DictMixin, object):
 
     def find_file(self, module=None):
         """Search the paths for the settings file"""
-        env_file = os.environ.get('VIGILO_SETTINGS_MODULE', None)
+        env_file = os.environ.get('VIGILO_SETTINGS', None)
         if env_file and os.path.exists(env_file):
             return env_file
         for d in self._dirs:
