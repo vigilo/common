@@ -1,6 +1,6 @@
-NAME = common
-BUILDENV = ../glue
-PYTHON = $(BUILDENV)/bin/python
+NAME := common
+BUILDENV := ../glue
+PYTHON := $(BUILDENV)/bin/python
 
 all: $(PYTHON)
 	$(PYTHON) setup.py build
@@ -14,15 +14,19 @@ clean:
 buildclean: clean
 	rm -rf eggs develop-eggs parts .installed.cfg bin
 
+EPYDOC := $(shell [ -f $(BUILDENV)/bin/epydoc ] && echo $(BUILDENV)/bin/epydoc || echo $(PYTHON) /usr/bin/epydoc)
+
 apidoc: doc/apidoc/index.html
 doc/apidoc/index.html: src/vigilo/$(NAME)
 	rm -rf $(CURDIR)/doc/apidoc/*
-	PYTHONPATH=$(BUILDENV):src $(PYTHON) "$$(which epydoc)" -o $(dir $@) -v \
+	PYTHONPATH=$(BUILDENV):src $(EPYDOC) -o $(dir $@) -v \
 		   --name Vigilo --url http://www.projet-vigilo.org \
 		   --docformat=epytext vigilo.$(NAME)
 
+PYLINT := $(shell [ -f $(BUILDENV)/bin/pylint ] && echo $(BUILDENV)/bin/pylint || echo $(PYTHON) /usr/bin/pylint)
+
 lint: $(PYTHON) src/vigilo/$(NAME)
-	-PYTHONPATH=src $(PYTHON) $$(which pylint) \
+	-PYTHONPATH=src $(PYLINT) \
 		--rcfile=$(BUILDENV)/extra/pylintrc src/vigilo/$(NAME)
 
 
