@@ -1,33 +1,5 @@
 NAME := common
-BUILDENV := ../glue
-PYTHON := $(BUILDENV)/bin/python
-
-all: $(PYTHON)
-	$(PYTHON) setup.py build
-
-$(PYTHON):
-	make -C $(BUILDENV) bin/python
-
-clean:
-	find $(CURDIR) \( -name "*.pyc" -o -name "*~" \) -delete
-
-buildclean: clean
-	rm -rf eggs develop-eggs parts .installed.cfg bin
-
-EPYDOC := $(shell [ -f $(BUILDENV)/bin/epydoc ] && echo $(BUILDENV)/bin/epydoc || echo $(PYTHON) /usr/bin/epydoc)
-apidoc: doc/apidoc/index.html $(PYTHON)
-doc/apidoc/index.html: src/vigilo/$(NAME)
-	rm -rf $(CURDIR)/doc/apidoc/*
-	VIGILO_SETTINGS=$(BUILDENV)/settings.py PYTHONPATH=src \
-		$(EPYDOC) -o $(dir $@) -v \
-		   --name Vigilo --url http://www.projet-vigilo.org \
-		   --docformat=epytext vigilo.$(NAME)
-
-PYLINT := $(shell [ -f $(BUILDENV)/bin/pylint ] && echo $(BUILDENV)/bin/pylint || echo $(PYTHON) /usr/bin/pylint)
-lint: $(PYTHON) src/vigilo/$(NAME)
-	-PYTHONPATH=src $(PYLINT) \
-		--rcfile=$(BUILDENV)/extra/pylintrc src/vigilo/$(NAME)
-
-
-.PHONY: all clean buildclean apidoc lint tests
-
+all: build
+include ../glue/Makefile.common
+lint: lint_pylint
+tests: tests_nose
