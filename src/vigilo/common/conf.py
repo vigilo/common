@@ -11,11 +11,11 @@ the L{Settings._dirs} list.
 
 The default file name is "settings.py", and the first valid file is returned.
 
-To load the default config file:
+To load the default config file::
     from vigilo.common.conf import settings
     conntype = settings['MEMCACHE_CONN_TYPE']
 
-To load a module-specific config file:
+To load a module-specific config file::
     from vigilo.common.conf import settings
     settings.load("connector")
 
@@ -35,11 +35,11 @@ C{settings.load("connector")} looks for:
 If you define VIGILO_SETTINGS to a valid filename, it will override the
 search mechanism and be used instead.
 
-Command-line usage:
+Command-line usage::
     conntype=$(python -m vigilo.common.conf --get MEMCACHE_CONN_TYPE)
 
 
-Impl notes:
+Impl notes::
     a ConfigParser.SafeConfigParser would have worked as well,
     we'd replace settings.py in PYTHONPATH with a settings.cfg in PWD.
     I guess I'm too used to django.
@@ -99,13 +99,12 @@ class Settings(UserDict.DictMixin, object):
 
         @param module: a Vigilo module name
         @type  module: C{str}
+        @raise IOError: no config file has been found
         """
         self.conf_file = self.find_file(module)
         if not self.conf_file:
-            return None
-        settings_raw = {}
-        execfile(self.conf_file, settings_raw)
-        self.__dct.update(settings_raw)
+            raise IOError("No config file found")
+        self.load_file(self.conf_file)
 
     def find_file(self, module=None):
         """Search the paths for the settings file"""
@@ -121,6 +120,17 @@ class Settings(UserDict.DictMixin, object):
             return path
         return None
 
+    def load_file(self, filename):
+        """
+        Load a specific file
+
+        @param filename: the file path to load. Must exist and be valid python.
+        @type  filename: C{str}
+        """
+        settings_raw = {}
+        execfile(filename, settings_raw)
+        self.__dct.update(settings_raw)
+        
 settings = Settings()
 settings.load()
 

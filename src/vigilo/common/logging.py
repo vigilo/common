@@ -28,7 +28,7 @@ def get_logger(name):
     have been registered. Use them for very early logging initialization,
     such as calls to logging.setLoggerClass or multiprocessing.get_logger .
 
-    Since name should be the package name, a common use pattern is:
+    Since name should be the package name, a common use pattern is::
         LOGGER = get_logger(__name__)
     """
 
