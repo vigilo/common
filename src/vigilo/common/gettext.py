@@ -22,7 +22,7 @@ def translate(module_name):
             module_name = module_name + "." + i
     try :
         t = gettext.translation(module_name, '/usr/share/locale')
-        translate_ = t.ugettext
+        translate_ = t.gettext
         return translate_
     except IOError, e :
         #IOError: [Errno 2] No translation file found for domain: 'vigilo-connector'
