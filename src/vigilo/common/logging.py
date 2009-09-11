@@ -34,16 +34,16 @@ def get_logger(name):
 
     global plugins_loaded
     if not plugins_loaded:
-        for plugin_name in settings['LOGGING_PLUGINS']:
+        for plugin_name in settings.get('LOGGING_PLUGINS', []):
             #load_plugin(plugin_name, False) # Needs registry
             runpy.run_module(plugin_name)['register'](None)
         plugins_loaded = True
         # Configure the root logger
         # A stderr streamHandler is used by default.
         # Again, basicConfig assumes no prior unqualified uses of logging.{info,debug…}
-        logging.basicConfig(**settings['LOGGING_SETTINGS'])
-        for k, v in settings['LOGGING_LEVELS'].iteritems():
-            if settings['LOGGING_SYSLOG']:
+        logging.basicConfig(**settings.get('LOGGING_SETTINGS', {}))
+        for k, v in settings.get('LOGGING_LEVELS', {}).iteritems():
+            if settings.get('LOGGING_SYSLOG', False):
                 log = logging.getLogger(k)
                 handler = SysLogHandler(address="/dev/log", facility='daemon')
                 #handler = logging.FileHandler('/tmp/plop')
@@ -52,7 +52,7 @@ def get_logger(name):
         log_initialized()
 
     log = logging.getLogger(name)
-    if settings['LOGGING_SYSLOG']:
+    if settings.get('LOGGING_SYSLOG', False):
         handler = SysLogHandler(address="/dev/log", facility='daemon')
         #handler = logging.FileHandler('/tmp/plop')
         log.addHandler(handler)
