@@ -67,8 +67,6 @@ class Settings(UserDict.DictMixin, object):
     Valid settings name are of the form:
     FOO_BAR_BAZ2
 
-    @ivar _dirs: Directories to try (in order) for the config file
-    @type _dirs: C{list}
     @ivar filename: Filename to load, defaults to "settings.py"
     @type filename: C{str}
     @ivar conf_file: The path of the chosen file (used for logging)
@@ -77,10 +75,6 @@ class Settings(UserDict.DictMixin, object):
 
     def __init__(self, filename="settings.py"):
         self.__dct = {}
-        self._dirs = ["/etc/vigilo",
-                      os.path.join(os.environ.get("HOME"), ".vigilo"),
-                      ".",
-                     ]
         self.filename = filename
         self.conf_file = None
 
@@ -98,7 +92,7 @@ class Settings(UserDict.DictMixin, object):
         Load the configuration, optionnaly giving a Vigilo module
 
         @param module: a Vigilo module name
-        @type  module: C{str}
+        @type  module: C{str}, for example "vigiconf" or "correlator".
         @raise IOError: no config file has been found
         """
         self.conf_file = self.find_file(module)
@@ -107,13 +101,18 @@ class Settings(UserDict.DictMixin, object):
         self.load_file(self.conf_file)
 
     def find_file(self, module=None):
-        """Search the paths for the settings file"""
+        """
+        Search the paths for the settings file
+
+        @param module: a Vigilo module name
+        @type  module: C{str}, for example "vigiconf" or "correlator".
+        @return: the full path to the config file
+        @rtype: C{str}
+        """
         env_file = os.environ.get('VIGILO_SETTINGS', None)
         if env_file and os.path.exists(env_file):
             return env_file
-        for d in self._dirs:
-            if module:
-                d = os.path.join(d, module)
+        for d in self._get_dirs(module):
             path = os.path.join(d, self.filename)
             if not os.path.exists(path):
                 continue
@@ -130,7 +129,25 @@ class Settings(UserDict.DictMixin, object):
         settings_raw = {}
         execfile(filename, settings_raw)
         self.__dct.update(settings_raw)
-        
+
+    def _get_dirs(self, module=None):
+        """
+        Return the list of directories to use when loading a configuration
+        file. The order in the list significant.
+
+        @param module: a Vigilo module name
+        @type  module: C{str}, for example "vigiconf" or "correlator".
+        @rtype: C{list} of directories
+        """
+        dirs = []
+        for confdir in ["/etc/vigilo",
+                        os.path.join(os.environ.get("HOME", ""), ".vigilo")]:
+            if module:
+                confdir = "%s-%s" % (confdir, module)
+            dirs.append(confdir)
+        dirs.append(".")
+        return dirs
+
 settings = Settings()
 settings.load()
 
