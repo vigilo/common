@@ -97,6 +97,15 @@ class Settings(UserDict.DictMixin, object):
         """
         self.conf_file = self.find_file(module)
         if not self.conf_file:
+            # hardcoding logging (file settings.py not found, so no logger 
+            #  configured yet)
+            # logger hardcodé (fichier settings.py non trouvé, pas de logger
+            #  déjà configuré)
+            import logging as temp_logging
+            log = temp_logging.getLogger(__name__)
+            handler = temp_logging.handlers.SysLogHandler(address="/dev/log", facility='daemon')
+            log.addHandler(handler)
+            log.error("No config file found")
             raise IOError("No config file found")
         self.load_file(self.conf_file)
 
