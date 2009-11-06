@@ -18,6 +18,7 @@ setup(name='vigilo-common',
             'vigilo',
             ],
         packages=[
+            'vigilo',
             'vigilo.common',
             ],
         entry_points={
