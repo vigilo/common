@@ -46,7 +46,6 @@ def get_logger(name):
             if settings.get('LOGGING_SYSLOG', False):
                 log = logging.getLogger(k)
                 handler = SysLogHandler(address="/dev/log", facility='daemon')
-                #handler = logging.FileHandler('/tmp/plop')
                 log.addHandler(handler)
             get_logger(k).setLevel(v)
         log_initialized()
@@ -54,7 +53,6 @@ def get_logger(name):
     log = logging.getLogger(name)
     if settings.get('LOGGING_SYSLOG', False):
         handler = SysLogHandler(address="/dev/log", facility='daemon')
-        #handler = logging.FileHandler('/tmp/plop')
         log.addHandler(handler)
     
     return log 
