@@ -5,9 +5,8 @@ from __future__ import absolute_import
 Sets up logging, with twisted and multiprocessing integration.
 """
 
-import logging
+import logging, logging.config
 import runpy
-from logging.handlers import SysLogHandler
 
 """
 Impl notes:
@@ -34,26 +33,12 @@ def get_logger(name):
 
     global plugins_loaded
     if not plugins_loaded:
-        for plugin_name in settings.get('LOGGING_PLUGINS', []):
-            #load_plugin(plugin_name, False) # Needs registry
+        for plugin_name in settings['common'].get('LOGGING_PLUGINS', []):
             runpy.run_module(plugin_name)['register'](None)
+
         plugins_loaded = True
-        # Configure the root logger
-        # A stderr streamHandler is used by default.
-        # Again, basicConfig assumes no prior unqualified uses of logging.{info,debug…}
-        logging.basicConfig(**settings.get('LOGGING_SETTINGS', {}))
-        for k, v in settings.get('LOGGING_LEVELS', {}).iteritems():
-            if settings.get('LOGGING_SYSLOG', False):
-                log = logging.getLogger(k)
-                handler = SysLogHandler(address="/dev/log", facility='daemon')
-                log.addHandler(handler)
-            get_logger(k).setLevel(v)
+        logging.config.fileConfig(settings.filename)
         log_initialized()
 
-    log = logging.getLogger(name)
-    if settings.get('LOGGING_SYSLOG', False):
-        handler = SysLogHandler(address="/dev/log", facility='daemon')
-        log.addHandler(handler)
-    
-    return log 
+    return logging.getLogger(name)
 

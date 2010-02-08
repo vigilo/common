@@ -13,6 +13,7 @@ setup(name='vigilo-common',
         +'Currently configuration, logging, python backward compatibility.\n',
         install_requires=[
             'setuptools',
+            'configobj',
             ],
         namespace_packages = [
             'vigilo',

@@ -51,125 +51,92 @@ This is because Vigilo code may log or require settings for some other reason.
 from __future__ import absolute_import
 
 import os
-import re
 import sys
-import UserDict
+import os.path
+from configobj import ConfigObj, ParseError
+from validate import Validator
 
 __all__ = ( 'settings', )
 
-# Uppercase alnum, starts with alpha, underscores between alnums.
-SETTING_RE = re.compile('[A-Z][A-Z0-9]*(_[A-Z0-9]+)*')
-
-class Settings(UserDict.DictMixin, object):
-    """
-    A read-only dictionary that allows access only to properly-named settings.
-
-    Valid settings name are of the form:
-    FOO_BAR_BAZ2
-
-    @ivar filename: Filename to load, defaults to "settings.py"
-    @type filename: C{str}
-    @ivar conf_file: The path of the chosen file (used for logging)
-    @type conf_file: C{str}
-    """
-
-    def __init__(self, filename="settings.py"):
-        self.__dct = {}
+class ConfigParseError(ParseError):
+    def __init__(self, ex, filename):
+        self.ex = ex
         self.filename = filename
-        self.conf_file = None
 
-    def __getitem__(self, name):
-        if not SETTING_RE.match(name):
-            # Or maybe ValueError
-            raise KeyError('Invalid name', name)
-        return self.__dct[name]
+    def __str__(self):
+        return '%s (file being parsed: %s)' % (self.ex, self.filename)
 
-    def keys(self):
-        return [k for k in self.__dct if SETTING_RE.match(k)]
+def load_settings(module=None):
+    # Si la variable VIGILO_SETTINGS a été définie,
+    # on utilise le chemin d'accès qu'elle contient.
+    env_file = os.environ.get('VIGILO_SETTINGS', None)
 
-    def load(self, module=None):
-        """
-        Load the configuration, optionnaly giving a Vigilo module
+    filenames = []
+    if env_file:
+        filenames.append(env_file)
 
-        @param module: a Vigilo module name
-        @type  module: C{str}, for example "vigiconf" or "correlator".
-        @raise IOError: no config file has been found
-        """
-        self.conf_file = self.find_file(module)
-        if not self.conf_file:
-            # hardcoding logging (file settings.py not found, so no logger 
-            #  configured yet)
-            # logger hardcodé (fichier settings.py non trouvé, pas de logger
-            #  déjà configuré)
-            import logging as temp_logging
-            log = temp_logging.getLogger(__name__)
-            handler = temp_logging.handlers.SysLogHandler(address="/dev/log", facility='daemon')
-            log.addHandler(handler)
-            log.error("No config file found")
-            raise IOError("No config file found")
-        self.load_file(self.conf_file)
+    if module:
+        component = "%s/settings.ini" % module
+    else:
+        component = "settings.ini"
 
-    def find_file(self, module=None):
-        """
-        Search the paths for the settings file
+    paths = [
+        '/etc/vigilo/%s',
+        '~/.vigilo/%s',
+        './%s',
+    ]
+    paths = [os.path.join('', *(path % component).split('/'))
+                for path in paths]
+    filenames.extend(paths)
 
-        @param module: a Vigilo module name
-        @type  module: C{str}, for example "vigiconf" or "correlator".
-        @return: the full path to the config file
-        @rtype: C{str}
-        """
-        env_file = os.environ.get('VIGILO_SETTINGS', None)
-        if env_file and os.path.exists(env_file):
-            return env_file
-        for d in self._get_dirs(module):
-            path = os.path.join(d, self.filename)
-            if not os.path.exists(path):
-                continue
-            return path
-        return None
+    for filename in filenames:
+        filename = os.path.expanduser(filename)
+        if os.path.exists(filename):
+            try:
+                configspec = filename[:-4] + '.spec'
+                if os.path.exists(configspec):
+                    config = ConfigObj(filename, file_error=True,
+                        raise_errors=True, configspec=configspec)
 
-    def load_file(self, filename):
-        """
-        Load a specific file
+                    validator = Validator()
+                    valid = config.validate()
+                    if not valid:
+                        raise SyntaxError, 'Invalid value in configuration'
 
-        @param filename: the file path to load. Must exist and be valid python.
-        @type  filename: C{str}
-        """
-        settings_raw = {}
-        execfile(filename, settings_raw)
-        self.__dct.update(settings_raw)
+                else:
+                    config = ConfigObj(filename, file_error=True,
+                        raise_errors=True)
+            except IOError:
+                pass
+            except ParseError, e:
+                raise ConfigParseError(e, filename)
+            else:
+                return config
 
-    def _get_dirs(self, module=None):
-        """
-        Return the list of directories to use when loading a configuration
-        file. The order in the list significant.
+    from vigilo.common.gettext import translate
+    import logging as temp_logging
 
-        @param module: a Vigilo module name
-        @type  module: C{str}, for example "vigiconf" or "correlator".
-        @rtype: C{list} of directories
-        """
-        dirs = []
-        for confdir in ["/etc/vigilo",
-                        os.path.join(os.environ.get("HOME", ""), ".vigilo")]:
-            if module:
-                confdir = "%s-%s" % (confdir, module)
-            dirs.append(confdir)
-        dirs.append(".")
-        return dirs
+    _ = translate(__name__)
+    logger = temp_logging.getLogger(__name__)
 
-settings = Settings()
-settings.load()
+    handler = temp_logging.handlers.SysLogHandler(
+        address="/dev/log", facility='daemon')
+    logger.addHandler(handler)
+    logger.error(_("No configuration file found"))
+    raise IOError(_("No configuration file found"))
+
+settings = load_settings()
 
 
 def log_initialized():
     """
-    A backdoor for logging to tell us it was initialized, so that
-    we can log our own initialization.
+    Cette fonction est appelée une fois la configuration chargée
+    afin d'indiquer le nom du fichier qui a été chargé.
     """
 
     from vigilo.common.logging import get_logger
     LOGGER = get_logger(__name__)
-    LOGGER.info('Loaded settings from path %s', settings.conf_file)
+    LOGGER.info('Loaded settings from path %s', settings.filename)
 
 def main():
     from optparse import OptionParser
