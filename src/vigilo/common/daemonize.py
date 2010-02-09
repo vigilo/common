@@ -32,10 +32,11 @@ def daemonize():
     log.addHandler(handler)
 
     parser = optparse.OptionParser()
-    parser.add_option('--daemon', action='store_true', default=False,
-            help='detach and run as a daemon')
-    parser.add_option('--pidfile', action='store',
-            help='write pid to PIDFILE. Avoid nfs, prefer /var/run on a tmpfs.')
+    parser.add_option('-d', '--daemon', action='store_true', default=False,
+        help='detach and run as a daemon')
+    parser.add_option('-p', '--pidfile', action='store',
+        help='write pid to PIDFILE. Avoid nfs, prefer /var/run on a tmpfs.')
+
     opts, leftovers = parser.parse_args()
     if leftovers:
         sys.stderr.write(_('%(moduleName)s: Too many arguments\n') % 
@@ -43,6 +44,7 @@ def daemonize():
         log.error(_('%(moduleName)s: Too many arguments.') %
             {'moduleName': __name__})
         return empty_context()
+
     if opts.daemon:
         pidfile = None
         if opts.pidfile is not None:
