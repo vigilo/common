@@ -58,6 +58,27 @@ from validate import Validator
 
 __all__ = ( 'settings', )
 
+
+class VigiloConfigObj(ConfigObj):
+    """
+    Une classe permettant de gérer la configuration de Vigilo.
+    Il s'agit d'une surcouche pour ConfigObj qui facilite juste
+    le chargement de fichiers de configuration complémentaires.
+    """
+
+    def load_file(self, filename):
+        """
+        Charge un fichier de configuration supplémentaire
+        et fusionne les deux configurations.
+        """
+        try:
+            config = VigiloConfigObj(filename, file_error=True,
+                raise_errors=True)
+        except ParseError, e:
+            raise ConfigParseError(e, filename)
+        self.merge(config)
+
+
 class ConfigParseError(ParseError):
     def __init__(self, ex, filename):
         self.ex = ex
@@ -95,7 +116,7 @@ def load_settings(module=None):
             try:
                 configspec = filename[:-4] + '.spec'
                 if os.path.exists(configspec):
-                    config = ConfigObj(filename, file_error=True,
+                    config = VigiloConfigObj(filename, file_error=True,
                         raise_errors=True, configspec=configspec)
 
                     validator = Validator()
@@ -104,7 +125,7 @@ def load_settings(module=None):
                         raise SyntaxError, 'Invalid value in configuration'
 
                 else:
-                    config = ConfigObj(filename, file_error=True,
+                    config = VigiloConfigObj(filename, file_error=True,
                         raise_errors=True)
             except IOError:
                 pass
