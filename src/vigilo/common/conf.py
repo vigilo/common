@@ -59,26 +59,6 @@ from validate import Validator
 __all__ = ( 'settings', )
 
 
-class VigiloConfigObj(ConfigObj):
-    """
-    Une classe permettant de gérer la configuration de Vigilo.
-    Il s'agit d'une surcouche pour ConfigObj qui facilite juste
-    le chargement de fichiers de configuration complémentaires.
-    """
-
-    def load_file(self, filename):
-        """
-        Charge un fichier de configuration supplémentaire
-        et fusionne les deux configurations.
-        """
-        try:
-            config = VigiloConfigObj(filename, file_error=True,
-                raise_errors=True)
-        except ParseError, e:
-            raise ConfigParseError(e, filename)
-        self.merge(config)
-
-
 class ConfigParseError(ParseError):
     def __init__(self, ex, filename):
         self.ex = ex
@@ -87,66 +67,88 @@ class ConfigParseError(ParseError):
     def __str__(self):
         return '%s (file being parsed: %s)' % (self.ex, self.filename)
 
-def load_settings(module=None):
-    # Si la variable VIGILO_SETTINGS a été définie,
-    # on utilise le chemin d'accès qu'elle contient.
-    env_file = os.environ.get('VIGILO_SETTINGS', None)
-
-    filenames = []
-    if env_file:
-        filenames.append(env_file)
-
-    if module:
-        component = "%s/settings.ini" % module
-    else:
-        component = "settings.ini"
+class VigiloConfigObj(ConfigObj):
+    """
+    Une classe permettant de gérer la configuration de Vigilo.
+    Il s'agit d'une surcouche pour ConfigObj qui facilite juste
+    le chargement de fichiers de configuration complémentaires.
+    """
 
     paths = [
         '/etc/vigilo/%s',
         '~/.vigilo/%s',
         './%s',
     ]
-    paths = [os.path.join('', *(path % component).split('/'))
-                for path in paths]
-    filenames.extend(paths)
+    filenames = []
 
-    for filename in filenames:
-        filename = os.path.expanduser(filename)
-        if os.path.exists(filename):
-            try:
-                configspec = filename[:-4] + '.spec'
-                if os.path.exists(configspec):
-                    config = VigiloConfigObj(filename, file_error=True,
-                        raise_errors=True, configspec=configspec)
+    def load_file(self, filename):
+        """
+        Charge un fichier de configuration
+        """
+        try:
+            configspec = filename[:-4] + '.spec'
+            if os.path.exists(configspec):
+                config = VigiloConfigObj(filename, file_error=True,
+                    raise_errors=True, configspec=configspec)
 
-                    validator = Validator()
-                    valid = config.validate()
-                    if not valid:
-                        raise SyntaxError, 'Invalid value in configuration'
+                validator = Validator()
+                valid = config.validate()
+                if not valid:
+                    raise SyntaxError, 'Invalid value in configuration'
 
-                else:
-                    config = VigiloConfigObj(filename, file_error=True,
-                        raise_errors=True)
-            except IOError:
-                pass
-            except ParseError, e:
-                raise ConfigParseError(e, filename)
             else:
-                return config
+                config = VigiloConfigObj(filename, file_error=True,
+                    raise_errors=True)
+        except IOError:
+            pass
+        except ParseError, e:
+            raise ConfigParseError(e, filename)
+        else:
+            print "Found '%s', merging." % filename
+            self.merge(config)
+            self.filenames.append(filename)
 
-    from vigilo.common.gettext import translate
-    import logging as temp_logging
+    def load_module(self, module=None):
+        filenames = []
 
-    _ = translate(__name__)
-    logger = temp_logging.getLogger(__name__)
+        paths = [path % "settings.ini" for path in self.paths]
+        filenames.extend(paths)
 
-    handler = temp_logging.handlers.SysLogHandler(
-        address="/dev/log", facility='daemon')
-    logger.addHandler(handler)
-    logger.error(_("No configuration file found"))
-    raise IOError(_("No configuration file found"))
+        if module:
+            module_components = module.split(".")
+            if module_components[0] == "vigilo":
+                del module_components[0]
+            if len(module_components) > 0:
+                filename = "%s/settings.ini" % module_components[0]
+                paths = [path % filename for path in self.paths]
+                filenames.extend(paths)
 
-settings = load_settings()
+        # Si la variable VIGILO_SETTINGS a été définie,
+        # on utilise le chemin d'accès qu'elle contient.
+        env_file = os.environ.get('VIGILO_SETTINGS', None)
+        if env_file:
+            filenames.append(env_file)
+
+        for filename in filenames:
+            filename = os.path.expanduser(filename)
+            if not os.path.exists(filename):
+                print "Not found:", filename
+                continue
+            self.load_file(filename)
+        if not self.filenames:
+            from vigilo.common.gettext import translate
+            import logging as temp_logging
+
+            _ = translate(__name__)
+            logger = temp_logging.getLogger(__name__)
+
+            from logging.handlers import SysLogHandler
+            logger.addHandler(SysLogHandler(address="/dev/log", facility='daemon'))
+            logger.error(_("No configuration file found"))
+            raise IOError(_("No configuration file found"))
+
+
+settings = VigiloConfigObj(None, file_error=True, raise_errors=True)
 
 
 def log_initialized():
@@ -157,7 +159,7 @@ def log_initialized():
 
     from vigilo.common.logging import get_logger
     LOGGER = get_logger(__name__)
-    LOGGER.info('Loaded settings from path %s', settings.filename)
+    LOGGER.info('Loaded settings from paths: %s', ", ".join(settings.filenames))
 
 def main():
     from optparse import OptionParser

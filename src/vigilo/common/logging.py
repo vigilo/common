@@ -7,6 +7,7 @@ from __future__ import absolute_import
 import logging, logging.config
 import runpy
 import warnings
+import ConfigParser
 
 from vigilo.common.conf import settings, log_initialized
 
@@ -61,7 +62,11 @@ def get_logger(name):
         # On configure les logs depuis le fichier de settings
         # et on affiche un message pour indiquer quel fichier
         # de settings a été utilisé.
-        logging.config.fileConfig(settings.filename)
+        for filename in settings.filenames:
+            try:
+                logging.config.fileConfig(filename)
+            except ConfigParser.NoSectionError, e:
+                continue # Ce fichier de conf n'a rien pour logging
         log_initialized()
 
     return logging.getLogger(name)
