@@ -105,7 +105,7 @@ class VigiloConfigObj(ConfigObj):
         except ParseError, e:
             raise ConfigParseError(e, filename)
         else:
-            print "Found '%s', merging." % filename
+            #print "Found '%s', merging." % filename
             self.merge(config)
             self.filenames.append(filename)
 
@@ -133,7 +133,7 @@ class VigiloConfigObj(ConfigObj):
         for filename in filenames:
             filename = os.path.expanduser(filename)
             if not os.path.exists(filename):
-                print "Not found:", filename
+                #print "Not found:", filename
                 continue
             self.load_file(filename)
         if not self.filenames:
@@ -167,11 +167,13 @@ def main():
     from optparse import OptionParser
 
     parser = OptionParser()
+    parser.add_option('-s', '--section', dest='section')
     parser.add_option('-g', '--get', dest='get', metavar='SETTING_NAME')
     (opts, args) = parser.parse_args()
-    if opts.get is None:
+    if opts.get is None or opts.section is None:
         return -2
-    val = settings[opts.get]
+    settings.load_module()
+    val = settings[opts.section][opts.get]
     sys.stdout.write('%s\n' % val)
 
 if __name__ == '__main__':
