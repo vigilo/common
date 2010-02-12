@@ -89,7 +89,8 @@ class VigiloConfigObj(ConfigObj):
             configspec = filename[:-4] + '.spec'
             if os.path.exists(configspec):
                 config = VigiloConfigObj(filename, file_error=True,
-                    raise_errors=True, configspec=configspec)
+                    raise_errors=True, configspec=configspec,
+                    interpolation=False)
 
                 validator = Validator()
                 valid = config.validate()
@@ -98,7 +99,7 @@ class VigiloConfigObj(ConfigObj):
 
             else:
                 config = VigiloConfigObj(filename, file_error=True,
-                    raise_errors=True)
+                    raise_errors=True, interpolation=False)
         except IOError:
             pass
         except ParseError, e:
@@ -148,7 +149,8 @@ class VigiloConfigObj(ConfigObj):
             raise IOError(_("No configuration file found"))
 
 
-settings = VigiloConfigObj(None, file_error=True, raise_errors=True)
+settings = VigiloConfigObj(None, file_error=True, raise_errors=True,
+                            interpolation=False)
 
 
 def log_initialized():
