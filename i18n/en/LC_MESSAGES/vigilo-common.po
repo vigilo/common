@@ -1,0 +1,50 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid   ""
+msgstr  "Project-Id-Version: vigilo.common\n"
+        "Report-Msgid-Bugs-To: contact@projet-vigilo.org\n"
+        "POT-Creation-Date: 2010-02-16 10:06+0100\n"
+        "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+        "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+        "Language-Team: LANGUAGE <LL@li.org>\n"
+        "MIME-Version: 1.0\n"
+        "Content-Type: text/plain; charset=UTF-8\n"
+        "Content-Transfer-Encoding: 8bit\n"
+
+#: src/vigilo/common/conf.py:148 src/vigilo/common/conf.py:149
+msgid   "No configuration file found"
+msgstr  "No configuration file found"
+
+#: src/vigilo/common/daemonize.py:42
+#, python-format
+msgid   "%(moduleName)s: Too many arguments\n"
+msgstr  "%(moduleName)s: Too many arguments\n"
+
+#: src/vigilo/common/daemonize.py:44
+#, python-format
+msgid   "%(moduleName)s: Too many arguments."
+msgstr  "%(moduleName)s: Too many arguments."
+
+#: src/vigilo/common/daemonize.py:60
+#, python-format
+msgid   "Removing stale pid file at %(filename)s (%(pid)d)."
+msgstr  "Removing stale pid file at %(filename)s (%(pid)d)."
+
+#: src/vigilo/common/daemonize.py:66
+#, python-format
+msgid   "Already running, pid is %(pid)d.\n"
+msgstr  "Already running, pid is %(pid)d.\n"
+
+#: src/vigilo/common/daemonize.py:69
+#, python-format
+msgid   "Already running, pid is %(pid)d."
+msgstr  "Already running, pid is %(pid)d."
+
+#: src/vigilo/common/daemonize.py:72
+#, python-format
+msgid   "Removing stale pid file at %(pidfile)s (%(pid)d)."
+msgstr  "Removing stale pid file at %(pidfile)s (%(pid)d)."

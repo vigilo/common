@@ -57,21 +57,21 @@ def daemonize():
                         # This has false positives, no matter.
                     except OSError: # Stale pid
                         # We must remove a stale pidfile by hand :/
-                        log.info(_('Removing stale pid file at %(filename)s' +
+                        log.info(_('Removing stale pid file at %(filename)s'
                             ' (%(pid)d).') %
                             {'filename': opts.pidfile,
                              'pid': pid})
                         pidfile.break_lock()
                     else:
-                        sys.stderr.write(_('Already running, pid is ' +
+                        sys.stderr.write(_('Already running, pid is '
                             '%(pid)d.\n') % 
                             {'pid': pid})
                         log.error(_('Already running, pid is %(pid)d.') % 
                             {'pid': pid})
                 else:
-                    log.info(_('Removing stale pid file at %s (%d).') %
-                        {'pidfile': opts.pidfile,
-                         'pid': pid})
+                    log.info(_('Removing stale pid file at %(pidfile)s '
+                               '(%(pid)d).') % {'pidfile': opts.pidfile, 
+                                                'pid': pid})
                     pidfile.break_lock()
         context = daemon.DaemonContext(
                      detach_process=True,
