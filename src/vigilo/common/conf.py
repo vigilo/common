@@ -120,7 +120,7 @@ class VigiloConfigObj(ConfigObj):
             if module_components[0] == "vigilo":
                 del module_components[0]
             if len(module_components) > 0:
-                filename = "%s/settings.ini" % module_components[0]
+                filename = "%s/settings.ini" % module_components[0].replace("_", "-")
                 paths = [path % filename for path in self.paths]
                 filenames.extend(paths)
 
