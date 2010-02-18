@@ -22,6 +22,7 @@ def daemonize():
     from vigilo.common.gettext import translate
     _ = translate(__name__)
     import optparse
+    import signal
     from daemon import daemon, pidlockfile
     # hardcoding logging (no logger configured yet)
     # logger en dur (pas de logger déjà configuré)
@@ -73,6 +74,14 @@ def daemonize():
                                '(%(pid)d).') % {'pidfile': opts.pidfile, 
                                                 'pid': pid})
                     pidfile.break_lock()
+
+        # Incompatibilité entre python-daemon et multiprocessing (ouch) :
+        # http://github.com/ask/celery/blob/076daaa3e8620b4d2d02d34dea6689066fb031f0/celery/platform.py#L56
+        # set SIGCLD back to the default SIG_DFL (before python-daemon overrode
+        # it) lets the parent wait() for the terminated child process and stops
+        # the 'OSError: [Errno 10] No child processes' problem.
+        signal.signal(signal.SIGCLD, signal.SIG_DFL)
+
         context = daemon.DaemonContext(
                      detach_process=True,
                      pidfile=pidfile,
