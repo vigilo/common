@@ -4,6 +4,7 @@ Sets up logging, with twisted and multiprocessing integration.
 """
 from __future__ import absolute_import
 
+import os.path, sys
 import logging, logging.config
 import runpy
 import warnings
@@ -40,10 +41,11 @@ def get_logger(name):
         class MultiprocessingLogger(old_logger_class):
             def makeRecord(self, *args, **kwargs):
                 record = old_logger_class.makeRecord(self, *args, **kwargs)
+                record.processName = os.path.basename(sys.argv[0])
                 if not current_process:
-                    record.processName = '???'
+                    record.multiprocessName = '???'
                 else:
-                    record.processName = current_process().name
+                    record.multiprocessName = current_process().name
                 return record
         logging.setLoggerClass(MultiprocessingLogger)
 
