@@ -4,8 +4,8 @@ from setuptools import setup
 
 setup(name='vigilo-common',
         version='0.1',
-        author='Gabriel de Perthuis',
-        author_email='gabriel.de-perthuis@c-s.fr',
+        author='Vigilo Team',
+        author_email='contact@projet-vigilo.org',
         url='http://www.projet-vigilo.org/',
         description='Common vigilo utilities',
         license='http://www.gnu.org/licenses/gpl-2.0.html',
