@@ -17,9 +17,7 @@ def translate(module_name):
     # module_name (which include the filename we don't want)
     liste = module_name.strip().split('.')
     if liste:
-        module_name = liste[0]
-        for i in liste[1:-1]:
-            module_name = module_name + "." + i
+        module_name = '.'.join(liste[0:2])
     try :
         t = gettext.translation(module_name, '/usr/share/locale')
         translate_ = t.gettext
