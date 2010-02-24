@@ -18,6 +18,8 @@ BuildRequires:   python-setuptools
 Requires:   python >= 2.5
 Requires:   python-setuptools
 Requires:   configobj
+# Dependance de python-daemon
+Requires:   lockfile
 
 Buildarch:  noarch
 
