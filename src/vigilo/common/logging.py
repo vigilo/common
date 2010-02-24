@@ -6,7 +6,6 @@ from __future__ import absolute_import
 
 import os.path, sys
 import logging, logging.config
-import runpy
 import warnings
 import ConfigParser
 
@@ -39,7 +38,15 @@ def get_logger(name):
         # le message de log.
         old_logger_class = logging.getLoggerClass()
         class MultiprocessingLogger(old_logger_class):
+            """
+            Classe pour la génération de logs, qui ajoute les noms
+            du processus courant (le nom de l'exécutable lancé par
+            l'utilisateur ainsi que le nom éventuellement donné au
+            processus dans multiprocessing).
+            """
+
             def makeRecord(self, *args, **kwargs):
+                """Génération d'un enregistrement de log."""
                 record = old_logger_class.makeRecord(self, *args, **kwargs)
                 record.processName = os.path.basename(sys.argv[0])
                 if not current_process:
@@ -58,6 +65,8 @@ def get_logger(name):
         except ImportError:
             pass
         else:
+            # Mise en place de l'observateur de logs de Twisted
+            # et branchement sur le mécanisme classique des logs.
             tw_obs = twisted_logging.PythonLoggingObserver()
             tw_obs.start()
 

@@ -2,12 +2,16 @@
 """ Daemonize """
 from __future__ import absolute_import, with_statement
 
-class empty_context:
+class EmptyContext(object):
     """ 
     define an empty context the functions '__enter__' and '__exit__' do nothing
     """
+    def __init__(self):
+        super(EmptyContext, self).__init__()
+
     def __enter__(self):
         pass
+
     def __exit__(self, type, value, traceback):
         pass
 
@@ -44,7 +48,7 @@ def daemonize():
             {'moduleName': __name__})
         log.error(_('%(moduleName)s: Too many arguments.') %
             {'moduleName': __name__})
-        return empty_context()
+        return EmptyContext()
 
     if opts.daemon:
         pidfile = None
@@ -87,5 +91,5 @@ def daemonize():
                      pidfile=pidfile,
                      )
         return context
-    return empty_context()
+    return EmptyContext()
 

@@ -1,17 +1,22 @@
 # vim: set fileencoding=utf-8 sw=4 ts=4 et :
-from __future__ import absolute_import
-
 """
 Compatiblity wrappers for pre-2.6 python.
 
 Warning: monkey-patching.
 """
-
 if not hasattr(property, 'setter'):
     class _property(property):
+        """
+        Redéfini la classe property native pour permettre
+        le passage d'un getter, d'un setter, d'un deleter
+        et de la documentation directement.
+        """
         @property
         def setter(self):
+            """Change la manière dont property est appliqué aux fonctions."""
+
             def decorate(func):
+                """Décorateur pour modifier le comportement de property."""
                 return property(
                         fget=self.fget,
                         fset=func,

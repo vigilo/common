@@ -60,11 +60,26 @@ __all__ = ( 'settings', )
 
 
 class ConfigParseError(ParseError):
+    """
+    Exception utilisée lorsqu'une erreur se produit au chargement
+    d'un fichier de configuration de Vigilo.
+    Elle est similaire à l'erreur C{ParseError} de C{ConfigObj},
+    mais affiche en plus le nom du fichier analysé qui a provoqué
+    l'erreur.
+    """
+
     def __init__(self, ex, filename):
+        """Initialisation de l'exception."""
         self.ex = ex
         self.filename = filename
+        super(ConfigParseError, self).__init__(
+            ex.message, ex.line_number, ex.line)
 
     def __str__(self):
+        """
+        Affichage de l'exception.
+        On ajoute simplement le nom du fichier qui a provoqué l'erreur.
+        """
         return '%s (file being parsed: %s)' % (self.ex, self.filename)
 
 class VigiloConfigObj(ConfigObj):
@@ -93,7 +108,7 @@ class VigiloConfigObj(ConfigObj):
                     interpolation=False)
 
                 validator = Validator()
-                valid = config.validate()
+                valid = config.validate(validator)
                 if not valid:
                     raise SyntaxError, 'Invalid value in configuration'
 
@@ -110,6 +125,14 @@ class VigiloConfigObj(ConfigObj):
             self.filenames.append(filename)
 
     def load_module(self, module=None):
+        """
+        Charge le fichier de configuration spécifique à un module
+        de Vigilo.
+
+        Usage:
+            from vigilo.common.conf import settings
+            settings.load_module(__name__)
+        """
         filenames = []
 
         paths = [path % "settings.ini" for path in self.paths]
@@ -120,7 +143,8 @@ class VigiloConfigObj(ConfigObj):
             if module_components[0] == "vigilo":
                 del module_components[0]
             if len(module_components) > 0:
-                filename = "%s/settings.ini" % module_components[0].replace("_", "-")
+                filename = "%s/settings.ini" % \
+                    module_components[0].replace("_", "-")
                 paths = [path % filename for path in self.paths]
                 filenames.extend(paths)
 
@@ -144,7 +168,8 @@ class VigiloConfigObj(ConfigObj):
             logger = temp_logging.getLogger(__name__)
 
             from logging.handlers import SysLogHandler
-            logger.addHandler(SysLogHandler(address="/dev/log", facility='daemon'))
+            logger.addHandler(SysLogHandler(
+                address="/dev/log", facility='daemon'))
             logger.error(_("No configuration file found"))
             raise IOError(_("No configuration file found"))
 
@@ -163,18 +188,24 @@ def log_initialized():
     LOGGER = get_logger(__name__)
     LOGGER.info('Loaded settings from paths: %s', ", ".join(settings.filenames))
 
-def main():
+def main(*args):
+    """
+    Cette fonction est appelée lorsqu'un utilisateur lance la commande
+    'vigilo-config'.
+    Cet utilitaire permet d'obtenir la valeur d'un paramètre.
+    """
     from optparse import OptionParser
 
     parser = OptionParser()
     parser.add_option('-s', '--section', dest='section')
     parser.add_option('-g', '--get', dest='get', metavar='SETTING_NAME')
-    (opts, args) = parser.parse_args()
+    opts = parser.parse_args()[0]
     if opts.get is None or opts.section is None:
         return -2
     settings.load_module()
     val = settings[opts.section][opts.get]
     sys.stdout.write('%s\n' % val)
+    return 0
 
 if __name__ == '__main__':
     sys.exit(main())

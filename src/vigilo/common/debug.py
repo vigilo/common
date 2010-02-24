@@ -1,10 +1,4 @@
 # vim: set fileencoding=utf-8 sw=4 ts=4 et :
-from __future__ import absolute_import
-
-from IPython.Debugger import Tracer
-
-__all__ = ( 'debug_here', )
-
 """
 Debugging helpers.
 
@@ -16,6 +10,11 @@ Usage:
     debug_here()
 
 """
+from __future__ import absolute_import
 
-debug_here = Tracer()
+from IPython.Debugger import Tracer
+
+__all__ = ( 'DEBUG_HERE', )
+
+DEBUG_HERE = Tracer()
 

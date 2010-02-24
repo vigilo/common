@@ -22,7 +22,8 @@ def translate(module_name):
         t = gettext.translation(module_name, '/usr/share/locale')
         translate_ = t.gettext
         return translate_
-    except IOError, e :
-        #IOError: [Errno 2] No translation file found for domain: 'vigilo-connector'
+    except IOError, e:
+        # If the translation catalog did not load properly,
+        # return a dummy translator which does nothing.
         return unchanged
 
