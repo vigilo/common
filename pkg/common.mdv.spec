@@ -1,7 +1,7 @@
 %define module  common
 %define name    vigilo-%{module}
 %define version 1.0
-%define release 1
+%define release 1%{?svn}
 
 Name:       %{name}
 Summary:    Vigilo common library
@@ -18,8 +18,7 @@ BuildRequires:   python-setuptools
 Requires:   python >= 2.5
 Requires:   python-setuptools
 Requires:   configobj
-# Dependance de python-daemon
-Requires:   lockfile
+Requires:   python-pydaemon
 
 Buildarch:  noarch
 
@@ -46,9 +45,11 @@ make install \
 %clean
 rm -rf $RPM_BUILD_ROOT
 
-%files -f INSTALLED_FILES
+%files
 %defattr(-,root,root)
 %doc COPYING
+%{_bindir}/*
+%{python_sitelib}/*
 
 
 %changelog
