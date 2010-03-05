@@ -42,11 +42,12 @@ make install \
 	PREFIX=%{_prefix} \
 	PYTHON=%{_bindir}/python
 
+%find_lang %{name}
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
-%files
+%files -f %{name}.lang
 %defattr(-,root,root)
 %doc COPYING
 %{_bindir}/*
