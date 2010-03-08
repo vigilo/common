@@ -36,25 +36,29 @@ def get_logger(name):
         # Si multiprocessing est disponible, on l'utilise
         # pour obtenir le nom du processus dont provient
         # le message de log.
-        old_logger_class = logging.getLoggerClass()
-        class MultiprocessingLogger(old_logger_class):
-            """
-            Classe pour la génération de logs, qui ajoute les noms
-            du processus courant (le nom de l'exécutable lancé par
-            l'utilisateur ainsi que le nom éventuellement donné au
-            processus dans multiprocessing).
-            """
+        logging._acquireLock()
+        try:
+            old_logger_class = logging.getLoggerClass()
+            class MultiprocessingLogger(old_logger_class):
+                """
+                Classe pour la génération de logs, qui ajoute les noms
+                du processus courant (le nom de l'exécutable lancé par
+                l'utilisateur ainsi que le nom éventuellement donné au
+                processus dans multiprocessing).
+                """
 
-            def makeRecord(self, *args, **kwargs):
-                """Génération d'un enregistrement de log."""
-                record = old_logger_class.makeRecord(self, *args, **kwargs)
-                record.processName = os.path.basename(sys.argv[0])
-                if not current_process:
-                    record.multiprocessName = '???'
-                else:
-                    record.multiprocessName = current_process().name
-                return record
-        logging.setLoggerClass(MultiprocessingLogger)
+                def makeRecord(self, *args, **kwargs):
+                    """Génération d'un enregistrement de log."""
+                    record = old_logger_class.makeRecord(self, *args, **kwargs)
+                    record.processName = os.path.basename(sys.argv[0])
+                    if not current_process:
+                        record.multiprocessName = '???'
+                    else:
+                        record.multiprocessName = current_process().name
+                    return record
+            logging.setLoggerClass(MultiprocessingLogger)
+        finally:
+            logging._releaseLock()
 
         # Si Twisted est utilisé, on le configure pour transmettre
         # ses messages de log aux mécanismes classiques de C{logging}.
@@ -67,8 +71,13 @@ def get_logger(name):
         else:
             # Mise en place de l'observateur de logs de Twisted
             # et branchement sur le mécanisme classique des logs.
-            tw_obs = twisted_logging.PythonLoggingObserver()
-            tw_obs.start()
+            # On s'assure qu'aucun observateur n'a été enregistré
+            # auparavant pour éviter un problème de boucle infinie
+            # dans les rule runners (dû à des ajouts multiples de
+            # l'observateur).
+            if not twisted_logging.theLogPublisher.observers:
+                tw_obs = twisted_logging.PythonLoggingObserver()
+                tw_obs.start()
 
         # On configure les logs depuis le fichier de settings
         # et on affiche un message pour indiquer quel fichier
