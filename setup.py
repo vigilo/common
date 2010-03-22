@@ -31,7 +31,6 @@ setup(name='vigilo-common',
         install_requires=[
             'setuptools',
             'configobj',
-            'python-daemon',
             ],
         namespace_packages = [
             'vigilo',
