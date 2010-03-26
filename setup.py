@@ -3,6 +3,11 @@
 import os
 from setuptools import setup
 
+tests_require = [
+    'coverage',
+    'nose',
+    'pylint',
+]
 
 def install_i18n(i18ndir, destdir):
     data_files = []
@@ -32,6 +37,9 @@ setup(name='vigilo-common',
             'setuptools',
             'configobj',
             ],
+        extras_require={
+            'tests': tests_require,
+            },
         namespace_packages = [
             'vigilo',
             ],
