@@ -34,6 +34,7 @@ setup(name='vigilo-common',
         long_description='Common vigilo utilities\n'
         +'Currently configuration, logging, python backward compatibility.\n',
         install_requires=[
+            'Babel >= 0.9.4',
             'setuptools',
             'configobj',
             ],
