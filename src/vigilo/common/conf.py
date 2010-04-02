@@ -154,10 +154,11 @@ class VigiloConfigObj(ConfigObj):
         if env_file:
             filenames.append(env_file)
 
+        print filenames
         for filename in filenames:
             filename = os.path.expanduser(filename)
             if not os.path.exists(filename):
-                #print "Not found:", filename
+                print "Not found:", filename
                 continue
             self.load_file(filename)
         if not self.filenames:
