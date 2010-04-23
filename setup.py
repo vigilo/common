@@ -52,6 +52,9 @@ setup(name='vigilo-common',
             'console_scripts': [
                 'vigilo-config = vigilo.common.conf:main',
                 ],
+            'distutils.commands': [
+                'identity_catalog = vigilo.common.commands:identity_catalog',
+                ],
             },
         package_dir={'': 'src'},
         data_files=install_i18n("i18n", "/usr/share/locale")
