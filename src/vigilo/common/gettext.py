@@ -4,10 +4,6 @@ from __future__ import absolute_import
 
 import gettext
 
-def unchanged(string):
-    """ Fake function to not translate in case traduction file is missing """
-    return string
-
 def translate(module_name):
     """ 
     Return function of traduction of the string 
@@ -18,12 +14,8 @@ def translate(module_name):
     liste = module_name.strip().split('.')
     if liste:
         module_name = '-'.join(liste[0:2]).replace('_', '-')
-    try :
-        t = gettext.translation(module_name, '/usr/share/locale')
-        translate_ = t.ugettext
-        return translate_
-    except IOError, e:
-        # If the translation catalog did not load properly,
-        # return a dummy translator which does nothing.
-        return unchanged
+
+    t = gettext.translation(module_name, '/usr/share/locale', fallback=True)
+    translate_ = t.ugettext
+    return translate_
 

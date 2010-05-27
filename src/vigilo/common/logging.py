@@ -10,6 +10,8 @@ import warnings
 import ConfigParser
 
 from vigilo.common.conf import settings, log_initialized
+from logging import handlers
+from logging.handlers import SysLogHandler
 
 try:
     from multiprocessing import current_process
@@ -57,6 +59,13 @@ def get_logger(name):
                         record.multiprocessName = current_process().name
                     return record
             logging.setLoggerClass(MultiprocessingLogger)
+
+            class VigiloSysLogHandler(SysLogHandler):
+                def format(self, record):
+                    msg = SysLogHandler.format(self, record)
+                    return msg.encode('utf-8', 'replace')
+
+            handlers.SysLogHandler = VigiloSysLogHandler
         finally:
             logging._releaseLock()
 
