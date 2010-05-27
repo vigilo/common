@@ -20,7 +20,7 @@ def translate(module_name):
         module_name = '-'.join(liste[0:2]).replace('_', '-')
     try :
         t = gettext.translation(module_name, '/usr/share/locale')
-        translate_ = t.gettext
+        translate_ = t.ugettext
         return translate_
     except IOError, e:
         # If the translation catalog did not load properly,
