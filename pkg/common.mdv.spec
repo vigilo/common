@@ -19,7 +19,6 @@ BuildRequires:   python-babel
 Requires:   python >= 2.5
 Requires:   python-setuptools
 Requires:   python-configobj
-Requires:   python-pydaemon
 
 Buildarch:  noarch
 
