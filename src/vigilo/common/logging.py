@@ -94,19 +94,27 @@ def get_logger(name):
     return logging.getLogger(name)
 
 class VigiloFormatter(logging.Formatter):
-  def __init__(self, fmt=None, datefmt=None, encoding='utf-8'):
-    logging.Formatter.__init__(self, fmt, datefmt)
-    self.encoding = encoding
- 
-  def formatException(self, ei):
-    r = logging.Formatter.formatException(self, ei)
-    if type(r) in [types.StringType]:
-      r = r.decode(self.encoding, 'replace') # Convert to unicode
-    return r
- 
-  def format(self, record):
-    t = logging.Formatter.format(self, record)
-    if type(t) in [types.UnicodeType]:
-      t = t.encode(self.encoding, 'replace')
-    return t
+    """
+    Une classe de formattage pour le module logging de Python
+    qui supporte le passage d'un encodage.
+    Ceci permet de gérer correctement les messages de logging Unicode.
+
+    Le code provient de :
+    http://tony.czechit.net/2009/02/unicode-support-for-pythons-logging-library/
+    """
+    def __init__(self, fmt=None, datefmt=None, encoding='utf-8'):
+        logging.Formatter.__init__(self, fmt, datefmt)
+        self.encoding = encoding
+     
+    def formatException(self, ei):
+        r = logging.Formatter.formatException(self, ei)
+        if type(r) in [types.StringType]:
+            r = r.decode(self.encoding, 'replace') # Convert to unicode
+        return r
+
+    def format(self, record):
+        t = logging.Formatter.format(self, record)
+        if type(t) in [types.UnicodeType]:
+            t = t.encode(self.encoding, 'replace')
+        return t
 
