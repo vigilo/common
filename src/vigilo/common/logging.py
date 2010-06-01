@@ -4,14 +4,12 @@ Sets up logging, with twisted and multiprocessing integration.
 """
 from __future__ import absolute_import
 
-import os.path, sys
+import os.path, sys, types
 import logging, logging.config
 import warnings
 import ConfigParser
 
 from vigilo.common.conf import settings, log_initialized
-from logging import handlers
-from logging.handlers import SysLogHandler
 
 try:
     from multiprocessing import current_process
@@ -30,7 +28,6 @@ def get_logger(name):
     Cette fonction est typiquement utilisée ainsi::
         LOGGER = get_logger(__name__)
     """
-
     global plugins_loaded
     if not plugins_loaded:
         plugins_loaded = True
@@ -40,6 +37,9 @@ def get_logger(name):
         # le message de log.
         logging._acquireLock()
         try:
+            # Utilisation du formatteur de Vigilo par défaut.
+            logging._defaultFormatter = VigiloFormatter()
+
             old_logger_class = logging.getLoggerClass()
             class MultiprocessingLogger(old_logger_class):
                 """
@@ -59,13 +59,6 @@ def get_logger(name):
                         record.multiprocessName = current_process().name
                     return record
             logging.setLoggerClass(MultiprocessingLogger)
-
-            class VigiloSysLogHandler(SysLogHandler):
-                def format(self, record):
-                    msg = SysLogHandler.format(self, record)
-                    return msg.encode('utf-8', 'replace')
-
-            handlers.SysLogHandler = VigiloSysLogHandler
         finally:
             logging._releaseLock()
 
@@ -99,4 +92,21 @@ def get_logger(name):
         log_initialized()
 
     return logging.getLogger(name)
+
+class VigiloFormatter(logging.Formatter):
+  def __init__(self, fmt=None, datefmt=None, encoding='utf-8'):
+    logging.Formatter.__init__(self, fmt, datefmt)
+    self.encoding = encoding
+ 
+  def formatException(self, ei):
+    r = logging.Formatter.formatException(self, ei)
+    if type(r) in [types.StringType]:
+      r = r.decode(self.encoding, 'replace') # Convert to unicode
+    return r
+ 
+  def format(self, record):
+    t = logging.Formatter.format(self, record)
+    if type(t) in [types.UnicodeType]:
+      t = t.encode(self.encoding, 'replace')
+    return t
 
