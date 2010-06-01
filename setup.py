@@ -48,6 +48,11 @@ setup(name='vigilo-common',
             'vigilo',
             'vigilo.common',
             ],
+        message_extractors={
+            'src': [
+                ('**.py', 'python', None),
+            ],
+        },
         entry_points={
             'console_scripts': [
                 'vigilo-config = vigilo.common.conf:main',
