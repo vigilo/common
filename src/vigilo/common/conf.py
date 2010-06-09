@@ -87,6 +87,11 @@ class VigiloConfigObj(ConfigObj):
     Une classe permettant de gérer la configuration de Vigilo.
     Il s'agit d'une surcouche pour ConfigObj qui facilite juste
     le chargement de fichiers de configuration complémentaires.
+
+    ATTENTION : pour le moment, ConfigObj n'accepte que le caractère '#'
+                pour commencer une ligne de commentaire.
+                Voir à ce propos le ticket ouvert sur leur tracker :
+                http://code.google.com/p/configobj/issues/detail?id=19
     """
 
     paths = [
