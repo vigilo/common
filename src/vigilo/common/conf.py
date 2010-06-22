@@ -192,7 +192,7 @@ def log_initialized():
 
     from vigilo.common.logging import get_logger
     LOGGER = get_logger(__name__)
-    LOGGER.info('Loaded settings from paths: %s', ", ".join(settings.filenames))
+    LOGGER.debug('Loaded settings from paths: %s', ", ".join(settings.filenames))
 
 def main(*args):
     """
