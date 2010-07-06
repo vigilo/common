@@ -17,6 +17,7 @@ BuildRequires:   python-setuptools
 BuildRequires:   python-babel
 
 Requires:   python >= 2.5
+Requires:   python-babel >= 0.9.4
 Requires:   python-setuptools
 Requires:   python-configobj
 
