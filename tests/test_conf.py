@@ -30,9 +30,16 @@ class Conf(unittest.TestCase):
         settings.load_file(self.tmpfile)
         os.environ["VIGILO_SETTINGS"] = self.tmpfile
 
-    def test_loading(self):
-        self.load_conf_from_string("""[test-section]\nTEST_KEY = test_value\n""")
-        assert settings["test-section"].get("TEST_KEY") == "test_value"
+    def test_loading_with_semicolons_as_comments(self):
+        self.load_conf_from_string("""
+[section]
+; pre-member comment
+key=value ; inline comment
+; yet again!
+""")
+        self.assertEqual(settings["section"].get("key"), "value")
+        self.assertEqual(settings["section"].comments["key"], ["; pre-member comment"])
+        self.assertEqual(settings["section"].inline_comments["key"], "; inline comment")
 
     def test_cmdline(self):
         # Normally called from the command line, this is just for test coverage

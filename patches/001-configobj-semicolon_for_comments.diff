@@ -1,0 +1,158 @@
+Index: configobj.py
+===================================================================
+--- configobj.py	(revision 80)
++++ configobj.py	(working copy)
+@@ -1106,7 +1106,7 @@
+             (?:[^'"\s].*?)        # at least one non-space unquoted
+         )                         # section name close
+         ((?:\s*\])+)              # 4: section marker close
+-        \s*(\#.*)?                # 5: optional comment
++        \s*([\#;].*)?             # 5: optional comment
+         $''',
+         re.VERBOSE)
+ 
+@@ -1122,7 +1122,7 @@
+                         (?:
+                             (?:".*?")|              # double quotes
+                             (?:'.*?')|              # single quotes
+-                            (?:[^'",\#][^,\#]*?)    # unquoted
++                            (?:[^'",\#;][^,\#;]*?)  # unquoted
+                         )
+                         \s*,\s*                     # comma
+                     )*      # match all list items ending in a comma (if any)
+@@ -1130,13 +1130,13 @@
+                 (
+                     (?:".*?")|                      # double quotes
+                     (?:'.*?')|                      # single quotes
+-                    (?:[^'",\#\s][^,]*?)|           # unquoted
++                    (?:[^'",\#;\s][^,]*?)|          # unquoted
+                     (?:(?<!,))                      # Empty value
+                 )?          # last item in a list - or string value
+             )|
+             (,)             # alternatively a single comma - empty list
+         )
+-        \s*(\#.*)?          # optional comment
++        \s*([\#;].*)?       # optional comment
+         $''',
+         re.VERBOSE)
+ 
+@@ -1145,7 +1145,7 @@
+         (
+             (?:".*?")|          # double quotes
+             (?:'.*?')|          # single quotes
+-            (?:[^'",\#].*?)       # unquoted
++            (?:[^'",\#;]?.*?)   # unquoted
+         )
+         \s*,\s*                 # comma
+         ''',
+@@ -1157,18 +1157,18 @@
+         (
+             (?:".*?")|          # double quotes
+             (?:'.*?')|          # single quotes
+-            (?:[^'"\#].*?)|     # unquoted
++            (?:[^'"\#;].*?)|    # unquoted
+             (?:)                # Empty value
+         )
+-        \s*(\#.*)?              # optional comment
++        \s*([\#;].*)?           # optional comment
+         $''',
+         re.VERBOSE)
+ 
+     # regexes for finding triple quoted values on one line
+-    _single_line_single = re.compile(r"^'''(.*?)'''\s*(#.*)?$")
+-    _single_line_double = re.compile(r'^"""(.*?)"""\s*(#.*)?$')
+-    _multi_line_single = re.compile(r"^(.*?)'''\s*(#.*)?$")
+-    _multi_line_double = re.compile(r'^(.*?)"""\s*(#.*)?$')
++    _single_line_single = re.compile(r"^'''(.*?)'''\s*([#;].*)?$")
++    _single_line_double = re.compile(r'^"""(.*?)"""\s*([#;].*)?$')
++    _multi_line_single = re.compile(r"^(.*?)'''\s*([#;].*)?$")
++    _multi_line_double = re.compile(r'^(.*?)"""\s*([#;].*)?$')
+ 
+     _triple_quote = {
+         "'''": (_single_line_single, _multi_line_single),
+@@ -1550,7 +1550,7 @@
+             line = infile[cur_index]
+             sline = line.strip()
+             # do we have anything on the line ?
+-            if not sline or sline.startswith('#'):
++            if not sline or sline.startswith('#') or sline.startswith(';'):
+                 reset_comment = False
+                 comment_list.append(line)
+                 continue
+@@ -1760,7 +1760,7 @@
+         * Obey list syntax for empty and single member lists.
+         
+         If ``list_values=False`` then the value is only quoted if it contains
+-        a ``\\n`` (is multiline) or '#'.
++        a ``\\n`` (is multiline) or '#' or ';'.
+         
+         If ``write_empty_values`` is set, and the value is an empty string, it
+         won't be quoted.
+@@ -1786,9 +1786,9 @@
+         if not value:
+             return '""'
+         
+-        no_lists_no_quotes = not self.list_values and '\n' not in value and '#' not in value
++        no_lists_no_quotes = not self.list_values and '\n' not in value and '#' not in value and ';' not in value
+         need_triple = multiline and ((("'" in value) and ('"' in value)) or ('\n' in value ))
+-        hash_triple_quote = multiline and not need_triple and ("'" in value) and ('"' in value) and ('#' in value)
++        hash_triple_quote = multiline and not need_triple and ("'" in value) and ('"' in value) and ('#' in value or ';' in value)
+         check_for_single = (no_lists_no_quotes or not need_triple) and not hash_triple_quote
+         
+         if check_for_single:
+@@ -1809,7 +1809,7 @@
+             # if value has '\n' or "'" *and* '"', it will need triple quotes
+             quot = self._get_triple_quote(value)
+         
+-        if quot == noquot and '#' in value and self.list_values:
++        if quot == noquot and ('#' in value or ';' in value) and self.list_values:
+             quot = self._get_single_quote(value)
+                 
+         return quot % value
+@@ -1996,7 +1996,7 @@
+         if not comment:
+             return ''
+         start = self.indent_type
+-        if not comment.startswith('#'):
++        if not (comment.startswith('#') or comment.startswith(';')):
+             start += self._a_to_u(' # ')
+         return (start + comment)
+ 
+@@ -2024,6 +2024,7 @@
+             
+         out = []
+         cs = self._a_to_u('#')
++        cs2 = self._a_to_u(';')
+         csp = self._a_to_u('# ')
+         if section is None:
+             int_val = self.interpolation
+@@ -2032,7 +2033,8 @@
+             for line in self.initial_comment:
+                 line = self._decode_element(line)
+                 stripped_line = line.strip()
+-                if stripped_line and not stripped_line.startswith(cs):
++                if stripped_line and not stripped_line.startswith(cs) and \
++                    not stripped_line.startswith(cs2):
+                     line = csp + line
+                 out.append(line)
+                 
+@@ -2043,7 +2045,8 @@
+                 continue
+             for comment_line in section.comments[entry]:
+                 comment_line = self._decode_element(comment_line.lstrip())
+-                if comment_line and not comment_line.startswith(cs):
++                if comment_line and not comment_line.startswith(cs) and \
++                    not comment_line.startswith(cs2):
+                     comment_line = csp + comment_line
+                 out.append(indent_string + comment_line)
+             this_entry = section[entry]
+@@ -2068,7 +2071,8 @@
+             for line in self.final_comment:
+                 line = self._decode_element(line)
+                 stripped_line = line.strip()
+-                if stripped_line and not stripped_line.startswith(cs):
++                if stripped_line and not stripped_line.startswith(cs) and \
++                    not stripped_line.startswith(cs2):
+                     line = csp + line
+                 out.append(line)
+             self.interpolation = int_val
