@@ -4,7 +4,7 @@ from __future__ import absolute_import
 
 import gettext
 
-__all__ = ("translate", "translate_str")
+__all__ = ("translate", "translate_narrow")
 
 def _translate_module(module_name):
     """ 
@@ -25,7 +25,7 @@ def translate(module_name):
     t = _translate_module(module_name)
     return t.ugettext
 
-def translate_str(module_name):
+def translate_narrow(module_name):
     """ 
     Retourne la fonction de traduction de chaînes, qui ne retourne pas
     d'unicode mais une simple C{str}.
