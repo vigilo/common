@@ -4,10 +4,11 @@ from __future__ import absolute_import
 
 import gettext
 
-def translate(module_name):
+__all__ = ("translate", "translate_str")
+
+def _translate_module(module_name):
     """ 
-    Return function of traduction of the string 
-    passed in parameter (if available) 
+    Retrourne le module de traduction correspondant au module demandé.
     """
     # extraction of the module_name from the complete 
     # module_name (which include the filename we don't want)
@@ -15,7 +16,20 @@ def translate(module_name):
     if liste:
         module_name = '-'.join(liste[0:2]).replace('_', '-')
 
-    t = gettext.translation(module_name, '/usr/share/locale', fallback=True)
-    translate_ = t.ugettext
-    return translate_
+    return gettext.translation(module_name, '/usr/share/locale', fallback=True)
+
+def translate(module_name):
+    """ 
+    Retourne la fonction de traduction de chaînes, qui retourne de l'unicode.
+    """
+    t = _translate_module(module_name)
+    return t.ugettext
+
+def translate_str(module_name):
+    """ 
+    Retourne la fonction de traduction de chaînes, qui ne retourne pas
+    d'unicode mais une simple C{str}.
+    """
+    t = _translate_module(module_name)
+    return t.gettext
 
