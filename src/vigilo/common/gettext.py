@@ -12,11 +12,10 @@ def _translate_module(module_name):
     """
     # extraction of the module_name from the complete 
     # module_name (which include the filename we don't want)
-    liste = module_name.strip().split('.')
-    if liste:
-        module_name = '-'.join(liste[0:2]).replace('_', '-')
-
-    return gettext.translation(module_name, '/usr/share/locale', fallback=True)
+    parts = module_name.strip().split('.')
+    if parts:
+        module_name = '-'.join(parts[0:2]).replace('_', '-')
+    return gettext.translation(module_name, fallback=True)
 
 def translate(module_name):
     """ 
