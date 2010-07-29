@@ -5,6 +5,7 @@ Outils pour la manipulation de fichiers de traductions (catalogs).
 import os.path, os
 from distutils import log
 from distutils.cmd import Command
+from distutils.errors import DistutilsOptionError
 
 from babel import Locale
 from babel.core import UnknownLocaleError
@@ -15,6 +16,9 @@ class identity_catalog(Command):
     Génère un catalogue tel que les traductions sont équivalentes
     aux messages à traduire (similaire à la commande msgen sous Linux).
     """
+    # pylint: disable-msg=W0201,C0103,W0232
+    # fonctionnement normal d'un plugin distutils
+
     description = 'generates an identity catalog, like msgen'
     user_options = [
         ('domain=', 'D',
