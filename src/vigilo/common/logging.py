@@ -105,7 +105,7 @@ class VigiloFormatter(logging.Formatter):
     def __init__(self, fmt=None, datefmt=None, encoding='utf-8'):
         logging.Formatter.__init__(self, fmt, datefmt)
         self.encoding = encoding
-     
+
     def formatException(self, ei):
         r = logging.Formatter.formatException(self, ei)
         if type(r) in [types.StringType]:
@@ -117,4 +117,3 @@ class VigiloFormatter(logging.Formatter):
         if type(t) in [types.UnicodeType]:
             t = t.encode(self.encoding, 'replace')
         return t
-

@@ -6,28 +6,27 @@ Use dictionary access on the 'settings' object.
 Define VIGILO_SETTINGS in the environment to a valid file path
 that will be imported.
 
-The settings file will be searched in a list of directories defined in
-the L{Settings._dirs} list.
-
-The default file name is "settings.py", and the first valid file is returned.
+The default file name is "settings.py".
 
 To load the default config file::
     from vigilo.common.conf import settings
+    settings.load_module()
     conntype = settings['MEMCACHE_CONN_TYPE']
 
 To load a module-specific config file::
     from vigilo.common.conf import settings
-    settings.load("connector")
+    settings.load_module('vigilo.correlator')
+    conntype = settings['MEMCACHE_CONN_TYPE']
 
 By loading a module, the filename will be looked for in a subdirectory
 named after the module. Examples:
 
-C{settings.load()} looks for:
+C{settings.load_module()} looks for:
   - /etc/vigilo/settings.py
   - ~/.vigilo/settings.py
   - ./settings.py
 
-C{settings.load("connector")} looks for:
+C{settings.load_module("vigilo.connector")} looks for:
   - /etc/vigilo/connector/settings.py
   - ~/.vigilo/connector/settings.py
   - ./connector/settings.py
@@ -37,12 +36,6 @@ search mechanism and be used instead.
 
 Command-line usage::
     conntype=$(python -m vigilo.common.conf --get MEMCACHE_CONN_TYPE)
-
-
-Impl notes::
-    a ConfigParser.SafeConfigParser would have worked as well,
-    we'd replace settings.py in PYTHONPATH with a settings.cfg in PWD.
-    I guess I'm too used to django.
 
 We can't import any other Vigilo code here.
 This is because Vigilo code may log or require settings for some other reason.
@@ -88,10 +81,11 @@ class VigiloConfigObj(ConfigObj):
     Il s'agit d'une surcouche pour ConfigObj qui facilite juste
     le chargement de fichiers de configuration complémentaires.
 
-    ATTENTION : pour le moment, ConfigObj n'accepte que le caractère '#'
-                pour commencer une ligne de commentaire.
-                Voir à ce propos le ticket ouvert sur leur tracker :
-                http://code.google.com/p/configobj/issues/detail?id=19
+    ATTENTION::
+        pour le moment, ConfigObj n'accepte que le caractère '#'
+        pour commencer une ligne de commentaire.
+        Voir à ce propos le ticket ouvert sur leur tracker :
+        http://code.google.com/p/configobj/issues/detail?id=19
     """
 
     paths = [
@@ -134,7 +128,7 @@ class VigiloConfigObj(ConfigObj):
         Charge le fichier de configuration spécifique à un module
         de Vigilo.
 
-        Usage:
+        Usage::
             from vigilo.common.conf import settings
             settings.load_module(__name__)
         """

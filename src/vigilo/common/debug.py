@@ -2,11 +2,9 @@
 """
 Debugging helpers.
 
-Usage:
-
+Usage::
     from vigilo.common.debug import debug_here
-
-    … later in your code
+    # … later in your code
     debug_here()
 
 """
