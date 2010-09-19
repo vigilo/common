@@ -188,7 +188,7 @@ def log_initialized():
     LOGGER = get_logger(__name__)
     LOGGER.debug('Loaded settings from paths: %s', ", ".join(settings.filenames))
 
-def main(*args):
+def main():
     """
     Cette fonction est appelée lorsqu'un utilisateur lance la commande
     'vigilo-config'.

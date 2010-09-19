@@ -5,7 +5,7 @@ Sets up logging, with twisted and multiprocessing integration.
 from __future__ import absolute_import
 
 import os.path, sys, types
-import logging, logging.config
+import logging, logging.config # pylint: disable-msg=W0406
 import warnings
 import ConfigParser
 
@@ -28,14 +28,14 @@ def get_logger(name):
     Cette fonction est typiquement utilisée ainsi::
         LOGGER = get_logger(__name__)
     """
-    global plugins_loaded
+    global plugins_loaded # pylint: disable-msg=W0603
     if not plugins_loaded:
         plugins_loaded = True
 
         # Si multiprocessing est disponible, on l'utilise
         # pour obtenir le nom du processus dont provient
         # le message de log.
-        logging._acquireLock()
+        logging._acquireLock() # pylint: disable-msg=W0212
         try:
             # Utilisation du formatteur de Vigilo par défaut.
             logging._defaultFormatter = VigiloFormatter()
@@ -48,6 +48,7 @@ def get_logger(name):
                 l'utilisateur ainsi que le nom éventuellement donné au
                 processus dans multiprocessing).
                 """
+                # pylint: disable-msg=W0232
 
                 def makeRecord(self, *args, **kwargs):
                     """Génération d'un enregistrement de log."""
@@ -60,7 +61,7 @@ def get_logger(name):
                     return record
             logging.setLoggerClass(MultiprocessingLogger)
         finally:
-            logging._releaseLock()
+            logging._releaseLock() # pylint: disable-msg=W0212
 
         # Si Twisted est utilisé, on le configure pour transmettre
         # ses messages de log aux mécanismes classiques de C{logging}.
@@ -87,7 +88,7 @@ def get_logger(name):
         for filename in settings.filenames:
             try:
                 logging.config.fileConfig(filename)
-            except ConfigParser.NoSectionError, e:
+            except ConfigParser.NoSectionError:
                 continue # Ce fichier de conf n'a rien pour logging
         log_initialized()
 
