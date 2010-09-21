@@ -123,7 +123,7 @@ class VigiloConfigObj(ConfigObj):
             self.merge(config)
             self.filenames.append(filename)
 
-    def load_module(self, module=None):
+    def load_module(self, module=None, basename="settings.ini"):
         """
         Charge le fichier de configuration spécifique à un module
         de Vigilo.
@@ -134,7 +134,7 @@ class VigiloConfigObj(ConfigObj):
         """
         filenames = []
 
-        paths = [path % "settings.ini" for path in self.paths]
+        paths = [path % basename for path in self.paths]
         filenames.extend(paths)
 
         if module:
@@ -142,8 +142,9 @@ class VigiloConfigObj(ConfigObj):
             if module_components[0] == "vigilo":
                 del module_components[0]
             if len(module_components) > 0:
-                filename = "%s/settings.ini" % \
-                    module_components[0].replace("_", "-")
+                filename = os.path.join(
+                    module_components[0].replace("_", "-"),
+                    basename)
                 paths = [path % filename for path in self.paths]
                 filenames.extend(paths)
 
