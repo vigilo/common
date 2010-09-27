@@ -74,11 +74,12 @@ def get_logger(name):
         else:
             # Mise en place de l'observateur de logs de Twisted
             # et branchement sur le mécanisme classique des logs.
-            # On s'assure qu'aucun observateur n'a été enregistré
+            # On s'assure que l'observateur n'a pas été enregistré
             # auparavant pour éviter un problème de boucle infinie
             # dans les rule runners (dû à des ajouts multiples de
             # l'observateur).
-            if not twisted_logging.theLogPublisher.observers:
+            if twisted_logging.PythonLoggingObserver not in [ o.im_class
+                    for o in twisted_logging.theLogPublisher.observers]:
                 tw_obs = twisted_logging.PythonLoggingObserver()
                 tw_obs.start()
 
