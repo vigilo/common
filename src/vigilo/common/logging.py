@@ -78,8 +78,9 @@ def get_logger(name):
             # auparavant pour éviter un problème de boucle infinie
             # dans les rule runners (dû à des ajouts multiples de
             # l'observateur).
-            if twisted_logging.PythonLoggingObserver not in [ o.im_class
-                    for o in twisted_logging.theLogPublisher.observers]:
+            cur_obs_classes = [ o.im_class for o in
+                                twisted_logging.theLogPublisher.observers ]
+            if cur_obs_classes == [twisted_logging.DefaultObserver,]:
                 tw_obs = twisted_logging.PythonLoggingObserver()
                 tw_obs.start()
 
