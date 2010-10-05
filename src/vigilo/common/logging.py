@@ -81,7 +81,7 @@ def get_logger(name):
             cur_obs_classes = [ o.im_class for o in
                                 twisted_logging.theLogPublisher.observers ]
             if cur_obs_classes == [twisted_logging.DefaultObserver,]:
-                tw_obs = twisted_logging.PythonLoggingObserver()
+                tw_obs = twisted_logging.PythonLoggingObserver(loggerName=name)
                 tw_obs.start()
 
         # On configure les logs depuis le fichier de settings
