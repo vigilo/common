@@ -56,12 +56,12 @@ setup(name='vigilo-common',
         entry_points={
             'console_scripts': [
                 'vigilo-config = vigilo.common.conf:main',
-                ],
+                'vigilo-plugins = vigilo.common.plugins:main',
+            ],
             'distutils.commands': [
                 'identity_catalog = vigilo.common.commands:identity_catalog',
-                ],
-            },
+            ],
+        },
         package_dir={'': 'src'},
         data_files=install_i18n("i18n", os.path.join(sys.prefix, 'share', 'locale'))
         )
-
