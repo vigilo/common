@@ -1,17 +1,17 @@
-# French translations for PACKAGE package.
+# SOME DESCRIPTIVE TITLE.
 # Copyright (C) 2010 THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# Automatically generated, 2010.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version:  vigilo.common\n"
-"Report-Msgid-Bugs-To: contact@projet-vigilo.org\n"
-"POT-Creation-Date: 2010-02-16 10:06+0100\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2010-11-19 11:41+0100\n"
 "PO-Revision-Date: 2010-11-19 11:41+0100\n"
-"Last-Translator: Automatically generated\n"
-"Language-Team: none\n"
-"Plural-Forms: nplurals=2; plural=(n > 1)\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: de <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -19,17 +19,15 @@ msgstr ""
 
 #: src/vigilo/common/conf.py:174 src/vigilo/common/conf.py:175
 msgid "No configuration file found"
-msgstr "Fichier de configuration introuvable"
+msgstr "Es wurde keine Konfigurationsdatei gefunden"
 
 #: src/vigilo/common/plugins.py:23
 msgid ""
 "Displays the name and location of the Python package which provides this "
 "feature."
 msgstr ""
-"Affiche le nom et l'emplacement du paquet Python qui fournit cette "
-"fonctionnalité."
 
 #: src/vigilo/common/plugins.py:33
 msgid "Provided by:"
-msgstr "Fournit par :"
+msgstr ""
 
