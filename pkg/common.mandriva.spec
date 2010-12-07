@@ -15,9 +15,6 @@ License:    GPLv2
 
 BuildRequires:   python-setuptools
 BuildRequires:   python-babel
-BuildRequires:   epydoc
-# Pour la generation de doc
-BuildRequires:   python-configobj
 
 Requires:   python >= 2.5
 Requires:   python-babel >= 0.9.4
@@ -37,7 +34,6 @@ This library is part of the Vigilo Project <http://vigilo-project.org>
 
 %build
 make PYTHON=%{_bindir}/python
-make apidoc EPYDOC=%{_bindir}/epydoc || :
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -53,7 +49,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files -f %{name}.lang
 %defattr(644,root,root,755)
-%doc COPYING doc/*
+%doc COPYING
 %attr(755,root,root) %{_bindir}/*
 %{python_sitelib}/*
 
