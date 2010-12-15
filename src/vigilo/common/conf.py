@@ -179,12 +179,13 @@ settings = VigiloConfigObj(None, file_error=True, raise_errors=True,
                             interpolation=False)
 
 
-def log_initialized():
+def log_initialized(silent_load=False):
     """
     Cette fonction est appelée une fois la configuration chargée
     afin d'indiquer le nom du fichier qui a été chargé.
     """
-
+    if silent_load:
+        return
     from vigilo.common.logging import get_logger
     LOGGER = get_logger(__name__)
     LOGGER.debug('Loaded settings from paths: %s', ", ".join(settings.filenames))

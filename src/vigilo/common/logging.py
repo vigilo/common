@@ -19,7 +19,7 @@ except ImportError:
 __all__ = ( 'get_logger', )
 
 plugins_loaded = False
-def get_logger(name):
+def get_logger(name, silent_load=False):
     """
     Obtient le logger associé à un nom de module qualifié.
 
@@ -92,7 +92,7 @@ def get_logger(name):
                 logging.config.fileConfig(filename)
             except ConfigParser.NoSectionError:
                 continue # Ce fichier de conf n'a rien pour logging
-        log_initialized()
+        log_initialized(silent_load)
 
     return logging.getLogger(name)
 
