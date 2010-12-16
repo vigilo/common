@@ -63,8 +63,17 @@ def get_logger(name, silent_load=False):
         finally:
             logging._releaseLock() # pylint: disable-msg=W0212
 
+        # On configure les logs depuis le fichier de settings
+        for filename in settings.filenames:
+            try:
+                logging.config.fileConfig(filename)
+            except ConfigParser.NoSectionError:
+                continue # Ce fichier de conf n'a rien pour logging
+
         # Si Twisted est utilisé, on le configure pour transmettre
         # ses messages de log aux mécanismes classiques de C{logging}.
+        # ATTENTION: cela doit être fait *après* le fileConfig ci-dessus,
+        # sinon ça ne loggue plus rien.
         warnings.filterwarnings(
                 'ignore', category=DeprecationWarning, module='^twisted\.')
         try:
@@ -84,14 +93,8 @@ def get_logger(name, silent_load=False):
                 tw_obs = twisted_logging.PythonLoggingObserver(loggerName=name)
                 tw_obs.start()
 
-        # On configure les logs depuis le fichier de settings
-        # et on affiche un message pour indiquer quel fichier
-        # de settings a été utilisé.
-        for filename in settings.filenames:
-            try:
-                logging.config.fileConfig(filename)
-            except ConfigParser.NoSectionError:
-                continue # Ce fichier de conf n'a rien pour logging
+        # on affiche un message pour indiquer quel fichier de settings a été
+        # utilisé (sauf si on a explicitement demandé de pas le faire).
         log_initialized(silent_load)
 
     return logging.getLogger(name)
