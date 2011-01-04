@@ -52,6 +52,10 @@ import pkg_resources
 from configobj import ConfigObj, ParseError
 from validate import Validator
 
+from vigilo.common.gettext import translate
+_ = translate(__name__)
+
+
 __all__ = ( 'settings', )
 
 
