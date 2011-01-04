@@ -46,6 +46,9 @@ from __future__ import absolute_import
 import os
 import sys
 import os.path
+
+import pkg_resources
+
 from configobj import ConfigObj, ParseError
 from validate import Validator
 
@@ -189,6 +192,51 @@ def log_initialized(silent_load=False):
     from vigilo.common.logging import get_logger
     LOGGER = get_logger(__name__)
     LOGGER.debug('Loaded settings from paths: %s', ", ".join(settings.filenames))
+
+
+def setup_plugins_path(plugins_path):
+    """Très fortement inspiré de Trac"""
+    from vigilo.common.logging import get_logger
+    LOGGER = get_logger(__name__)
+    LOGGER.debug("Loading plugins from %s" % plugins_path)
+
+    distributions, errors = pkg_resources.working_set.find_plugins(
+        pkg_resources.Environment([plugins_path])
+    )
+    for dist in distributions:
+        if dist in pkg_resources.working_set:
+            continue
+        LOGGER.debug('Adding plugin %(plugin)s from %(location)s', {
+            'plugin': dist,
+            'location': dist.location,
+        })
+        pkg_resources.working_set.add(dist)
+
+    def _log_error(item, e):
+        if isinstance(e, pkg_resources.DistributionNotFound):
+            LOGGER.debug('Skipping "%(item)s": ("%(module)s" not found)', {
+                'item': item,
+                'module': e,
+            })
+        elif isinstance(e, pkg_resources.VersionConflict):
+            LOGGER.error(_('Skipping "%(item)s": (version conflict '
+                           '"%(error)s")'),
+                         {'item': item, 'error': e})
+        elif isinstance(e, pkg_resources.UnknownExtra):
+            LOGGER.error(_('Skipping "%(item)s": (unknown extra "%(error)s")'),
+                         {'item': item, 'error': e })
+        elif isinstance(e, ImportError):
+            LOGGER.error(_('Skipping "%(item)s": (can\'t import "%(error)s")'),
+                         {'item': item, 'error': e })
+        else:
+            LOGGER.error(_('Skipping "%(item)s": (error "%(error)s")'), {
+                'item': item,
+                'error': e,
+            })
+
+    for dist, e in errors.iteritems():
+        _log_error(dist, e)
+
 
 def main():
     """
