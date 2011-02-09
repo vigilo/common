@@ -54,6 +54,8 @@ def get_logger(name, silent_load=False):
                     """Génération d'un enregistrement de log."""
                     record = old_logger_class.makeRecord(self, *args, **kwargs)
                     record.processName = os.path.basename(sys.argv[0])
+                    if not record.processName.startswith("vigi"):
+                        record.processName = name.replace(".", "-").replace("_", "-")
                     if not current_process:
                         record.multiprocessName = '???'
                     else:
