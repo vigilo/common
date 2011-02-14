@@ -74,8 +74,8 @@ def get_logger(name, silent_load=False):
         # ses messages de log aux mécanismes classiques de C{logging}.
         # ATTENTION: cela doit être fait *après* le fileConfig ci-dessus,
         # sinon ça ne loggue plus rien.
-        warnings.filterwarnings(
-                'ignore', category=DeprecationWarning, module='^twisted\.')
+        warnings.filterwarnings('ignore', category=DeprecationWarning,
+                                module='^(twisted|ampoule)\.')
         try:
             import twisted.python.log as twisted_logging
         except ImportError:
