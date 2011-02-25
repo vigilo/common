@@ -18,7 +18,7 @@ except ImportError:
 
 __all__ = ( 'get_logger', )
 
-plugins_loaded = False
+PLUGINS_LOADED = False
 def get_logger(name, silent_load=False):
     """
     Obtient le logger associé à un nom de module qualifié.
@@ -28,40 +28,9 @@ def get_logger(name, silent_load=False):
     Cette fonction est typiquement utilisée ainsi::
         LOGGER = get_logger(__name__)
     """
-    global plugins_loaded # pylint: disable-msg=W0603
-    if not plugins_loaded:
-        plugins_loaded = True
-
-        # Si multiprocessing est disponible, on l'utilise
-        # pour obtenir le nom du processus dont provient
-        # le message de log.
-        logging._acquireLock() # pylint: disable-msg=W0212
-        try:
-            # Utilisation du formatteur de Vigilo par défaut.
-            logging._defaultFormatter = VigiloFormatter()
-
-            old_logger_class = logging.getLoggerClass()
-            class MultiprocessingLogger(old_logger_class):
-                """
-                Classe pour la génération de logs, qui ajoute les noms
-                du processus courant (le nom de l'exécutable lancé par
-                l'utilisateur ainsi que le nom éventuellement donné au
-                processus dans multiprocessing).
-                """
-                # pylint: disable-msg=W0232
-
-                def makeRecord(self, *args, **kwargs):
-                    """Génération d'un enregistrement de log."""
-                    record = old_logger_class.makeRecord(self, *args, **kwargs)
-                    record.processName = os.path.basename(sys.argv[0])
-                    if not current_process:
-                        record.multiprocessName = '???'
-                    else:
-                        record.multiprocessName = current_process().name
-                    return record
-            logging.setLoggerClass(MultiprocessingLogger)
-        finally:
-            logging._releaseLock() # pylint: disable-msg=W0212
+    global PLUGINS_LOADED # pylint: disable-msg=W0603
+    if not PLUGINS_LOADED:
+        PLUGINS_LOADED = True
 
         # On configure les logs depuis le fichier de settings
         for filename in settings.filenames:
@@ -119,6 +88,22 @@ class VigiloFormatter(logging.Formatter):
         return r
 
     def format(self, record):
+        """
+        Formatte l'enregistrement à journaliser en prenant soin
+        d'adapter l'encoding si nécessaire.
+        """
+        # On préfèrerait utiliser une classe qui hérite de Logger
+        # pour éviter de faire ces opérations pour chaque message
+        # et chaque appel au formateur.
+        # Malheureusement, les bibliothèques externes (ex: Twisted)
+        # n'utiliseront pas forcément notre classe et échoueront
+        # si le format des messages contient 'processName', etc.
+        record.processName = os.path.basename(sys.argv[0])
+        if not current_process:
+            record.multiprocessName = '???'
+        else:
+            record.multiprocessName = current_process().name
+
         t = logging.Formatter.format(self, record)
         if type(t) in [types.UnicodeType]:
             t = t.encode(self.encoding, 'replace')
