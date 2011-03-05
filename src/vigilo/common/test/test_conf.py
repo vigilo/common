@@ -53,7 +53,7 @@ key=value ; inline comment
                         run_name='__main__', alter_sys=True)
             except SystemExit, e:
                 pass
-            assert sys.stdout.getvalue().strip() == "test_value"
+            assert sys.stdout.getvalue().strip() == "test_value" # pylint: disable-msg=E1103
             sys.stdout.seek(0)
             sys.stdout.truncate()
 
@@ -63,7 +63,7 @@ key=value ; inline comment
                         run_name='__main__', alter_sys=True)
             except SystemExit, e:
                 pass
-            assert sys.stdout.getvalue() == ''
+            assert sys.stdout.getvalue() == '' # pylint: disable-msg=E1103
             sys.stdout.seek(0)
             sys.stdout.truncate()
 
