@@ -25,7 +25,7 @@ def get_rrd_path(hostname, ds=None, base_dir=None, path_mode="flat"):
             hash = hashlib.md5(hostname).hexdigest()
             subpath = os.path.join(hash[0], "".join(hash[0:2]))
             _DIR_HASHES[hostname] = subpath
-    host_dir = os.path.join(base_dir, subpath, hostname)
+    host_dir = os.path.join(base_dir, subpath, urllib.quote_plus(hostname))
     if ds is None:
         return host_dir
     ds = urllib.quote_plus(ds)
