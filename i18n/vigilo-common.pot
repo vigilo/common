@@ -1,14 +1,14 @@
 # Translations template for vigilo-common.
-# Copyright (C) 2010 ORGANIZATION
+# Copyright (C) 2011 ORGANIZATION
 # This file is distributed under the same license as the vigilo-common project.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2011.
 #
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: vigilo-common 2.0.0\n"
 "Report-Msgid-Bugs-To: contact@projet-vigilo.org\n"
-"POT-Creation-Date: 2010-10-19 13:02+0200\n"
+"POT-Creation-Date: 2011-03-22 10:59+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,8 +17,28 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 0.9.4\n"
 
-#: src/vigilo/common/conf.py:174 src/vigilo/common/conf.py:175
+#: src/vigilo/common/conf.py:181 src/vigilo/common/conf.py:182
 msgid "No configuration file found"
+msgstr ""
+
+#: src/vigilo/common/conf.py:226
+#, python-format
+msgid "Skipping \"%(item)s\": (version conflict \"%(error)s\")"
+msgstr ""
+
+#: src/vigilo/common/conf.py:230
+#, python-format
+msgid "Skipping \"%(item)s\": (unknown extra \"%(error)s\")"
+msgstr ""
+
+#: src/vigilo/common/conf.py:233
+#, python-format
+msgid "Skipping \"%(item)s\": (can't import \"%(error)s\")"
+msgstr ""
+
+#: src/vigilo/common/conf.py:236
+#, python-format
+msgid "Skipping \"%(item)s\": (error \"%(error)s\")"
 msgstr ""
 
 #: src/vigilo/common/plugins.py:23
