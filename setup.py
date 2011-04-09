@@ -29,10 +29,11 @@ setup(name='vigilo-common',
         author='Vigilo Team',
         author_email='contact@projet-vigilo.org',
         url='http://www.projet-vigilo.org/',
-        description='Common vigilo utilities',
+        description="Vigilo common library",
         license='http://www.gnu.org/licenses/gpl-2.0.html',
-        long_description='Common vigilo utilities\n'
-        +'Currently configuration, logging, python backward compatibility.\n',
+        long_description="This library provides common facilities to Vigilo "
+                         "components, such as configuration loading, "
+                         "logging, daemonizing, i18n, etc.",
         install_requires=[
             'Babel >= 0.9.4',
             'setuptools',
