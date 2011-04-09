@@ -17,7 +17,8 @@ import gc, pstats, time
 
 def profile(fn):
     def wrapper(*args, **kw):
-        elapsed, stat_loader, result = _profile("/tmp/profiling.txt", fn, *args, **kw)
+        _elapsed, stat_loader, result = _profile("/tmp/profiling.txt", fn,
+                                                 *args, **kw)
         stats = stat_loader()
         stats.sort_stats('cumulative')
         stats.print_stats()
@@ -26,7 +27,7 @@ def profile(fn):
         return result
     return wrapper
 
-def _profile(filename, fn, *args, **kw):
+def _profile(filename, fn, *args, **kw): # pylint: disable-msg=W0613
     load_stats = lambda: pstats.Stats(filename)
     gc.collect()
 

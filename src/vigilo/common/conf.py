@@ -58,6 +58,8 @@ _ = translate(__name__)
 
 __all__ = ( 'settings', )
 
+# pylint: disable-msg=C0103
+
 
 class ConfigParseError(ParseError):
     """
@@ -169,10 +171,10 @@ class VigiloConfigObj(ConfigObj):
                 continue
             self.load_file(filename)
         if not self.filenames:
-            from vigilo.common.gettext import translate
+            #from vigilo.common.gettext import translate
             import logging as temp_logging
 
-            _ = translate(__name__)
+            #_ = translate(__name__)
             logger = temp_logging.getLogger(__name__)
 
             from logging.handlers import SysLogHandler
@@ -183,7 +185,7 @@ class VigiloConfigObj(ConfigObj):
 
 
 settings = VigiloConfigObj(None, file_error=True, raise_errors=True,
-                            interpolation=False)
+                           interpolation=False)
 
 
 def log_initialized(silent_load=False):
@@ -195,7 +197,8 @@ def log_initialized(silent_load=False):
         return
     from vigilo.common.logging import get_logger
     LOGGER = get_logger(__name__)
-    LOGGER.debug('Loaded settings from paths: %s', ", ".join(settings.filenames))
+    LOGGER.debug('Loaded settings from paths: %s',
+                 ", ".join(settings.filenames))
 
 
 def setup_plugins_path(plugins_path):

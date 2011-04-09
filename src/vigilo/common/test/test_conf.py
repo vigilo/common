@@ -11,8 +11,6 @@ from cStringIO import StringIO
 
 from vigilo.common.conf import settings
 
-from nose.tools import assert_raises
-
 
 class Conf(unittest.TestCase):
 
@@ -38,22 +36,27 @@ key=value ; inline comment
 ; yet again!
 """)
         self.assertEqual(settings["section"].get("key"), "value")
-        self.assertEqual(settings["section"].comments["key"], ["; pre-member comment"])
-        self.assertEqual(settings["section"].inline_comments["key"], "; inline comment")
+        self.assertEqual(settings["section"].comments["key"],
+                         ["; pre-member comment"])
+        self.assertEqual(settings["section"].inline_comments["key"],
+                         "; inline comment")
 
     def test_cmdline(self):
         # Normally called from the command line, this is just for test coverage
         # See the memcached runit service for command-line use.
-        self.load_conf_from_string("""[test-section]\nTEST_KEY = test_value\n""")
+        self.load_conf_from_string(
+                    """[test-section]\nTEST_KEY = test_value\n""")
         oldout, sys.stdout = sys.stdout, StringIO()
         try:
+            # pylint: disable-msg=E1103
             sys.argv[1:] = ['--get', 'TEST_KEY', "--section", "test-section"]
             try:
                 runpy.run_module('vigilo.common.conf',
                         run_name='__main__', alter_sys=True)
-            except SystemExit, e:
+            except SystemExit:
                 pass
-            assert sys.stdout.getvalue().strip() == "test_value" # pylint: disable-msg=E1103
+            self.assertEqual(sys.stdout.getvalue().strip(),
+                             "test_value")
             sys.stdout.seek(0)
             sys.stdout.truncate()
 
@@ -61,9 +64,9 @@ key=value ; inline comment
             try:
                 runpy.run_module('vigilo.common.conf',
                         run_name='__main__', alter_sys=True)
-            except SystemExit, e:
+            except SystemExit:
                 pass
-            assert sys.stdout.getvalue() == '' # pylint: disable-msg=E1103
+            self.assertEqual(sys.stdout.getvalue(), '')
             sys.stdout.seek(0)
             sys.stdout.truncate()
 

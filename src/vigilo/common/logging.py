@@ -14,7 +14,7 @@ from vigilo.common.conf import settings, log_initialized
 try:
     from multiprocessing import current_process
 except ImportError:
-    current_process = None
+    current_process = None # pylint: disable-msg=C0103
 
 __all__ = ( 'get_logger', )
 
@@ -58,7 +58,7 @@ def get_logger(name, silent_load=False):
             # l'observateur).
             cur_obs_classes = [ o.im_class for o in
                                 twisted_logging.theLogPublisher.observers ]
-            if cur_obs_classes == [twisted_logging.DefaultObserver,]:
+            if cur_obs_classes == [twisted_logging.DefaultObserver, ]:
                 tw_obs = twisted_logging.PythonLoggingObserver(loggerName=name)
                 tw_obs.start()
 
