@@ -6,6 +6,21 @@ notamment le chargement de fichiers de configuration, la journalisation,
 l'internationalisation, etc.
 
 
+Dépendances
+-----------
+Vigilo nécessite une version de Python supérieure ou égale à 2.5. Le chemin de
+l'exécutable python peut être passé en paramètre du ``make install`` de la
+façon suivante::
+
+    make install PYTHON=/usr/bin/python2.6
+
+La bibliothèque "common" a besoin des modules python suivants :
+
+- Babel >= 0.9.4
+- setuptools (ou distribute)
+- configobj
+
+
 Installation
 ------------
 L'installation se fait par la commande ``make install`` (à exécuter en
