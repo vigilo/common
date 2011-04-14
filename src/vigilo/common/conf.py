@@ -256,10 +256,22 @@ def main():
     parser = OptionParser()
     parser.add_option('-s', '--section', dest='section')
     parser.add_option('-g', '--get', dest='get', metavar='SETTING_NAME')
-    opts = parser.parse_args()[0]
+    opts, args = parser.parse_args()
     if opts.get is None or opts.section is None:
-        return -2
-    settings.load_module()
+        return 2
+    for arg in args:
+        if not os.path.exists(arg):
+            print _("No such file: %s") % arg
+            return 3
+        settings.load_file(arg)
+    if not args:
+        settings.load_module()
+    if opts.section not in settings:
+        print >> sys.stderr, _("No such section: %s") % opts.section
+        return 1
+    if opts.get not in settings[opts.section]:
+        print >> sys.stderr, _("No such key: %s") % opts.get
+        return 1
     val = settings[opts.section][opts.get]
     sys.stdout.write('%s\n' % val)
     return 0
