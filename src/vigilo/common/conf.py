@@ -77,8 +77,7 @@ class ConfigParseError(ParseError):
         """Initialisation de l'exception."""
         self.ex = ex
         self.filename = filename
-        super(ConfigParseError, self).__init__(
-            ex.message, ex.line_number, ex.line)
+        super(ConfigParseError, self).__init__(*ex.args)
 
     def __str__(self):
         """
@@ -262,13 +261,17 @@ def main():
     opts, args = parser.parse_args()
     if opts.get is None or opts.section is None:
         return 2
-    for arg in args:
-        if not os.path.exists(arg):
-            print _("No such file: %s") % arg
-            return 3
-        settings.load_file(arg)
-    if not args:
-        settings.load_module()
+    try:
+        for arg in args:
+            if not os.path.exists(arg):
+                print _("No such file: %s") % arg
+                return 3
+            settings.load_file(arg)
+        if not args:
+            settings.load_module()
+    except ConfigParseError, e:
+        print >> sys.stderr, e
+        return 4
     if opts.section not in settings:
         print >> sys.stderr, _("No such section: %s") % opts.section
         return 1
