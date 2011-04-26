@@ -1,3 +1,4 @@
+Upstream : http://code.google.com/p/configobj/issues/detail?id=19
 Index: configobj.py
 ===================================================================
 --- configobj.py	(revision 80)

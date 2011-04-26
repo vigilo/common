@@ -18,7 +18,10 @@ La bibliothèque "common" a besoin des modules python suivants :
 
 - Babel >= 0.9.4
 - setuptools (ou distribute)
-- configobj
+- configobj (à patcher)
+
+Un patch est nécessaire pour le module configobj, il se trouve dans le dossier
+"patches" (il a été remonté au projet).
 
 
 Installation
