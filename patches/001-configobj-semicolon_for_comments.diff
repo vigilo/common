@@ -41,7 +41,7 @@ Index: configobj.py
          (
              (?:".*?")|          # double quotes
              (?:'.*?')|          # single quotes
--            (?:[^'",\#].*?)       # unquoted
+-            (?:[^'",\#]?.*?)       # unquoted
 +            (?:[^'",\#;]?.*?)   # unquoted
          )
          \s*,\s*                 # comma
