@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vigilo-common 2.0.0\n"
 "Report-Msgid-Bugs-To: contact@projet-vigilo.org\n"
-"POT-Creation-Date: 2011-03-22 10:59+0100\n"
+"POT-Creation-Date: 2011-05-06 15:37+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,37 +17,52 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 0.9.4\n"
 
-#: src/vigilo/common/conf.py:181 src/vigilo/common/conf.py:182
+#: src/vigilo/common/conf.py:185 src/vigilo/common/conf.py:186
 msgid "No configuration file found"
 msgstr ""
 
-#: src/vigilo/common/conf.py:226
+#: src/vigilo/common/conf.py:231
 #, python-format
 msgid "Skipping \"%(item)s\": (version conflict \"%(error)s\")"
 msgstr ""
 
-#: src/vigilo/common/conf.py:230
+#: src/vigilo/common/conf.py:235
 #, python-format
 msgid "Skipping \"%(item)s\": (unknown extra \"%(error)s\")"
 msgstr ""
 
-#: src/vigilo/common/conf.py:233
+#: src/vigilo/common/conf.py:238
 #, python-format
 msgid "Skipping \"%(item)s\": (can't import \"%(error)s\")"
 msgstr ""
 
-#: src/vigilo/common/conf.py:236
+#: src/vigilo/common/conf.py:241
 #, python-format
 msgid "Skipping \"%(item)s\": (error \"%(error)s\")"
 msgstr ""
 
-#: src/vigilo/common/plugins.py:23
+#: src/vigilo/common/conf.py:267
+#, python-format
+msgid "No such file: %s"
+msgstr ""
+
+#: src/vigilo/common/conf.py:276
+#, python-format
+msgid "No such section: %s"
+msgstr ""
+
+#: src/vigilo/common/conf.py:279
+#, python-format
+msgid "No such key: %s"
+msgstr ""
+
+#: src/vigilo/common/plugins.py:26
 msgid ""
 "Displays the name and location of the Python package which provides this "
 "feature."
 msgstr ""
 
-#: src/vigilo/common/plugins.py:33
+#: src/vigilo/common/plugins.py:36
 msgid "Provided by:"
 msgstr ""
 
