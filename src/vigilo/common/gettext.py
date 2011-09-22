@@ -35,3 +35,9 @@ def translate_narrow(module_name):
     t = _translate_module(module_name)
     return t.gettext
 
+def l_(message):
+    """
+    Fonction permettant de marquer les messages
+    comme nécessitant une traduction.
+    """
+    return message
