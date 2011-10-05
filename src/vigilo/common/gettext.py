@@ -7,7 +7,7 @@ from __future__ import absolute_import
 
 import gettext # pylint: disable-msg=W0406
 
-__all__ = ("translate", "translate_narrow")
+__all__ = ("translate", "translate_narrow", "l_")
 
 def _translate_module(module_name):
     """
