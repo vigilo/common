@@ -19,6 +19,11 @@ def get_rrd_path(hostname, ds=None, base_dir=None, path_mode="flat"):
     if base_dir is None:
         base_dir = "/var/lib/vigilo/rrds"
     subpath = ""
+
+    if isinstance(hostname, unicode):
+        # urllib et hashlib ne supportent pas unicode.
+        hostname = hostname.encode('utf-8')
+
     if path_mode == "name" and len(hostname) >= 2:
         subpath = os.path.join(hostname[0], "".join(hostname[0:2]))
     elif path_mode == "hash":
@@ -28,9 +33,14 @@ def get_rrd_path(hostname, ds=None, base_dir=None, path_mode="flat"):
             host_hash = hashlib.md5(hostname).hexdigest()
             subpath = os.path.join(host_hash[0], "".join(host_hash[0:2]))
             _DIR_HASHES[hostname] = subpath
+
     host_dir = os.path.join(base_dir, subpath, urllib.quote_plus(hostname))
     if ds is None:
         return host_dir
+
+    if isinstance(ds, unicode):
+        # urllib ne supporte pas unicode.
+        ds = ds.encode('utf-8')
     ds = urllib.quote_plus(ds)
     return os.path.join(host_dir, "%s.rrd" % ds)
 
