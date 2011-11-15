@@ -2,6 +2,7 @@
 # Copyright (C) 2006-2011 CS-SI
 # License: GNU GPL v2 <http://www.gnu.org/licenses/gpl-2.0.html>
 
+import os
 import sys
 import fcntl
 import atexit
@@ -45,4 +46,8 @@ def delete_lock(f):
     """
     LOGGER.debug("Removing the lock.")
     fcntl.flock(f, fcntl.LOCK_UN)
+    filename = f.name
+    f.close()
+    if os.path.exists(filename):
+        os.remove(filename)
 
