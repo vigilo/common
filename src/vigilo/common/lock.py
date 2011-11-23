@@ -32,11 +32,12 @@ def grab_lock(lockfile):
         LOGGER.error(_("Can't obtain lock on lockfile (%(lockfile)s). "
                        "Application already running? REASON: %(error)s"),
                      { 'lockfile': f.name, 'error': e })
-        sys.exit(1)
+        return False
 
     # On veut être sûr que le verrou sera supprimé
     # à l'arrêt de l'application.
     atexit.register(delete_lock, f)
+    return True
 
 def delete_lock(f):
     """
