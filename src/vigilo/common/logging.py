@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # vim: set fileencoding=utf-8 sw=4 ts=4 et :
 # Copyright (C) 2006-2011 CS-SI
 # License: GNU GPL v2 <http://www.gnu.org/licenses/gpl-2.0.html>
@@ -111,3 +112,31 @@ class VigiloFormatter(logging.Formatter):
         if type(t) in [types.UnicodeType]:
             t = t.encode(self.encoding, 'replace')
         return t
+
+def get_error_message(exc):
+    """
+    Étant donné une exception, récupère le message d'erreur
+    contenu dans l'exception.
+
+    @param exc: Exception Python.
+    @type exc: C{Exception}
+    @return: Message d'erreur représenté par l'exception.
+    @rtype: C{unicode}
+    """
+    try:
+        # On tente d'abord une conversion directe vers Unicode
+        # (nécessite que la classe de l'exception redéfinisse
+        # __unicode__; c'est le cas de toutes les classes
+        # dérivées de Exception depuis Python 2.6).
+        return unicode(exc)
+
+    except UnicodeDecodeError:
+        # On suppose que l'exception contient en fait
+        # un message d'erreur de type str encodé en UTF-8.
+        return unicode(str(exc), 'utf-8', 'replace')
+
+    except UnicodeEncodeError:
+        # Contournement pour Python 2.5, unicode(exc) nous amène ici
+        # si l'exception contient de l'unicode car Exception.__unicode__
+        # n'existe pas dans cette version et un str() implicite a lieu.
+        return unicode(exc.message)
