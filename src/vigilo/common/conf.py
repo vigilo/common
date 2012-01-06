@@ -131,6 +131,8 @@ class VigiloConfigObj(ConfigObj):
             raise ConfigParseError(e, filename)
         else:
             #print "Found '%s', merging." % filename
+            if config.get("include") and os.path.exists(config.get("include")):
+                self.load_file(config.get("include"))
             self.merge(config)
             self.filenames.append(filename)
 

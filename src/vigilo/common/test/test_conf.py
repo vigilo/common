@@ -9,27 +9,36 @@ import os
 import sys
 import tempfile
 import unittest
+import shutil
 # Import from io if we target 2.6
 from cStringIO import StringIO
 
 from vigilo.common.conf import settings
 
 
+
 class Conf(unittest.TestCase):
 
     def setUp(self):
         settings.reset()
-        self.tmpfile_fd, self.tmpfile = tempfile.mkstemp(dir="/dev/shm")
+        self.tmpdir = tempfile.mkdtemp(prefix="vigilo-common-tests-")
 
     def tearDown(self):
-        os.remove(self.tmpfile)
+        shutil.rmtree(self.tmpdir)
+        try:
+            del os.environ["VIGILO_SETTINGS"]
+        except KeyError:
+            pass
+
 
     def load_conf_from_string(self, data):
-        conffile = os.fdopen(self.tmpfile_fd, "w")
-        conffile.write(data)
-        conffile.close()
-        settings.load_file(self.tmpfile)
-        os.environ["VIGILO_SETTINGS"] = self.tmpfile
+        conffile = os.path.join(self.tmpdir, "test.ini")
+        conf = open(conffile, "w")
+        conf.write(data)
+        conf.close()
+        settings.load_file(conffile)
+        os.environ["VIGILO_SETTINGS"] = conffile
+
 
     def test_loading_with_semicolons_as_comments(self):
         self.load_conf_from_string("""
@@ -43,6 +52,7 @@ key=value ; inline comment
                          ["; pre-member comment"])
         self.assertEqual(settings["section"].inline_comments["key"],
                          "; inline comment")
+
 
     def test_cmdline(self):
         # Normally called from the command line, this is just for test coverage
@@ -76,3 +86,51 @@ key=value ; inline comment
         finally:
             sys.stdout = oldout
 
+
+    def test_include(self):
+        """Directive "include" """
+        conffile1 = os.path.join(self.tmpdir, "test-1.ini")
+        conffile2 = os.path.join(self.tmpdir, "test-2.ini")
+        conf1 = open(conffile1, "w")
+        conf1.write("include = %s" % conffile2)
+        conf1.close()
+        conf2 = open(conffile2, "w")
+        conf2.write("[section]\nkey=value\n")
+        conf2.close()
+        settings.load_file(conffile1)
+        self.assertTrue("section" in settings)
+        self.assertEqual(settings["section"].get("key"), "value")
+
+
+    def test_include_2_levels(self):
+        """Directive "include" sur deux niveaux"""
+        conffile1 = os.path.join(self.tmpdir, "test-1.ini")
+        conffile2 = os.path.join(self.tmpdir, "test-2.ini")
+        conffile3 = os.path.join(self.tmpdir, "test-3.ini")
+        conf1 = open(conffile1, "w")
+        conf1.write("include = %s" % conffile2)
+        conf1.close()
+        conf2 = open(conffile2, "w")
+        conf2.write("include = %s" % conffile3)
+        conf2.close()
+        conf3 = open(conffile3, "w")
+        conf3.write("[section]\nkey=value\n")
+        conf3.close()
+        settings.load_file(conffile1)
+        self.assertTrue("section" in settings)
+        self.assertEqual(settings["section"].get("key"), "value")
+
+
+    def test_include_overload(self):
+        """Directive "include": surcharge des valeurs """
+        conffile1 = os.path.join(self.tmpdir, "test-1.ini")
+        conffile2 = os.path.join(self.tmpdir, "test-2.ini")
+        conf1 = open(conffile1, "w")
+        conf1.write("include = %s\n[section]\nkey=value1" % conffile2)
+        conf1.close()
+        conf2 = open(conffile2, "w")
+        conf2.write("[section]\nkey=value2\n")
+        conf2.close()
+        settings.load_file(conffile1)
+        self.assertTrue("section" in settings)
+        self.assertEqual(settings["section"].get("key"), "value1")
