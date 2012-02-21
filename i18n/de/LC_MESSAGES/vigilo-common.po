@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version:  vigilo.common\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
 "POT-Creation-Date: 2010-11-19 11:41+0100\n"
-"PO-Revision-Date: 2011-05-06 15:37+0200\n"
+"PO-Revision-Date: 2012-02-24 11:18+0100\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: de <LL@li.org>\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
@@ -17,43 +17,125 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 0.9.4\n"
 
-#: src/vigilo/common/conf.py:185 src/vigilo/common/conf.py:186
+#: src/vigilo/common/argparse.py:31
+msgid "usage: "
+msgstr ""
+
+#: src/vigilo/common/argparse.py:32
+#, python-format
+msgid "conflicting option string(s): %s"
+msgstr ""
+
+#: src/vigilo/common/argparse.py:33
+msgid "subcommands"
+msgstr ""
+
+#: src/vigilo/common/argparse.py:34
+#, python-format
+msgid "unrecognized arguments: %s"
+msgstr ""
+
+#: src/vigilo/common/argparse.py:35
+msgid "expected one argument"
+msgstr ""
+
+#: src/vigilo/common/argparse.py:36
+msgid "expected at most one argument"
+msgstr ""
+
+#: src/vigilo/common/argparse.py:37
+msgid "expected at least one argument"
+msgstr ""
+
+#: src/vigilo/common/argparse.py:38
+#, python-format
+msgid "expected %s argument(s)"
+msgstr ""
+
+#: src/vigilo/common/argparse.py:39
+#, python-format
+msgid "invalid choice: %r (choose from %s)"
+msgstr ""
+
+#: src/vigilo/common/argparse.py:40
+msgid "positional arguments"
+msgstr ""
+
+#: src/vigilo/common/argparse.py:41
+msgid "optional arguments"
+msgstr ""
+
+#: src/vigilo/common/argparse.py:42
+msgid "too few arguments"
+msgstr ""
+
+#: src/vigilo/common/argparse.py:43
+#, python-format
+msgid "argument %s is required"
+msgstr ""
+
+#: src/vigilo/common/argparse.py:44
+#, python-format
+msgid "one of the arguments %s is required"
+msgstr ""
+
+#: src/vigilo/common/argparse.py:45
+#, python-format
+msgid "%s: error: %s\n"
+msgstr ""
+
+#: src/vigilo/common/argparse.py:46
+msgid "show this help message and exit"
+msgstr ""
+
+#: src/vigilo/common/argparse.py:47
+msgid "show program's version number and exit"
+msgstr ""
+
+#: src/vigilo/common/conf.py:187 src/vigilo/common/conf.py:188
 msgid "No configuration file found"
 msgstr "Es wurde keine Konfigurationsdatei gefunden"
 
-#: src/vigilo/common/conf.py:231
+#: src/vigilo/common/conf.py:233
 #, python-format
 msgid "Skipping \"%(item)s\": (version conflict \"%(error)s\")"
 msgstr ""
 
-#: src/vigilo/common/conf.py:235
+#: src/vigilo/common/conf.py:237
 #, python-format
 msgid "Skipping \"%(item)s\": (unknown extra \"%(error)s\")"
 msgstr ""
 
-#: src/vigilo/common/conf.py:238
+#: src/vigilo/common/conf.py:240
 #, python-format
 msgid "Skipping \"%(item)s\": (can't import \"%(error)s\")"
 msgstr ""
 
-#: src/vigilo/common/conf.py:241
+#: src/vigilo/common/conf.py:243
 #, python-format
 msgid "Skipping \"%(item)s\": (error \"%(error)s\")"
 msgstr ""
 
-#: src/vigilo/common/conf.py:267
+#: src/vigilo/common/conf.py:269
 #, python-format
 msgid "No such file: %s"
 msgstr ""
 
-#: src/vigilo/common/conf.py:276
+#: src/vigilo/common/conf.py:278
 #, python-format
 msgid "No such section: %s"
 msgstr ""
 
-#: src/vigilo/common/conf.py:279
+#: src/vigilo/common/conf.py:281
 #, python-format
 msgid "No such key: %s"
+msgstr ""
+
+#: src/vigilo/common/lock.py:32
+#, python-format
+msgid ""
+"Can't obtain lock on lockfile (%(lockfile)s). Application already "
+"running? REASON: %(error)s"
 msgstr ""
 
 #: src/vigilo/common/plugins.py:26
@@ -65,4 +147,10 @@ msgstr ""
 #: src/vigilo/common/plugins.py:36
 msgid "Provided by:"
 msgstr ""
+
+#~ msgid ""
+#~ "Can't obtain lock on lockfile "
+#~ "(%(lockfile)s). Application already running ?"
+#~ " REASON : %(error)s"
+#~ msgstr ""
 

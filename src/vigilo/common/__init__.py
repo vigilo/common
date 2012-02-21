@@ -11,7 +11,7 @@ import os
 import urllib
 import hashlib
 
-__all__ = ("get_rrd_path", )
+__all__ = ("get_rrd_path", "parse_path")
 
 _DIR_HASHES = {}
 
@@ -52,9 +52,9 @@ def parse_path(path):
     @param path: Chemin d'accès relatif ou absolu.
     @type path: C{basestr}
     @return: Ensemble des composantes du chemin d'accès
-        ou None si L{path} ne représente pas un chemin
+        ou C{None} si L{path} ne représente pas un chemin
         d'accès valide.
-    @rtype: C{set} ou C{None}
+    @rtype: C{list} ou C{None}
     """
     parts = []
 

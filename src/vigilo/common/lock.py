@@ -30,7 +30,7 @@ def grab_lock(lockfile):
         fcntl.flock(f, fcntl.LOCK_EX | fcntl.LOCK_NB)
     except IOError, e:
         LOGGER.error(_("Can't obtain lock on lockfile (%(lockfile)s). "
-                       "Application already running ? REASON : %(error)s"),
+                       "Application already running? REASON: %(error)s"),
                      { 'lockfile': f.name, 'error': e })
         sys.exit(1)
 
@@ -50,4 +50,3 @@ def delete_lock(f):
     f.close()
     if os.path.exists(filename):
         os.remove(filename)
-
