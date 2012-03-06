@@ -111,9 +111,6 @@ class VigiloConfigObj(ConfigObj):
         """
         Charge un fichier de configuration
         """
-        if filename in self.filenames:
-            raise ConfigParseError(ParseError("Loop detected during includes processing"), filename)
-
         configspec = filename[:-4] + '.spec'
         try:
             if os.path.exists(configspec):
@@ -135,7 +132,6 @@ class VigiloConfigObj(ConfigObj):
             raise ConfigParseError(e, filename)
         else:
             #print "Found '%s', merging." % filename
-            self.filenames.append(filename)
             if config.get("include") and os.path.exists(config.get("include")):
                 if os.path.isdir(config.get("include")):
                     # On inclut tous les fichiers INI du dossier pointé
@@ -150,6 +146,7 @@ class VigiloConfigObj(ConfigObj):
                         self.load_file(included_file)
                 else:
                     self.load_file(config.get("include"))
+            self.filenames.append(filename)
             self.merge(config)
 
     def load_module(self, module=None, basename="settings.ini"):
