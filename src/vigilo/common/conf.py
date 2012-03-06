@@ -49,6 +49,7 @@ from __future__ import absolute_import
 import os
 import sys
 import os.path
+import glob
 
 import pkg_resources
 
@@ -110,8 +111,11 @@ class VigiloConfigObj(ConfigObj):
         """
         Charge un fichier de configuration
         """
+        if filename in self.filenames:
+            raise ConfigParseError(ParseError("Loop detected during includes processing"), filename)
+
+        configspec = filename[:-4] + '.spec'
         try:
-            configspec = filename[:-4] + '.spec'
             if os.path.exists(configspec):
                 config = VigiloConfigObj(filename, file_error=True,
                     raise_errors=True, configspec=configspec,
@@ -131,10 +135,22 @@ class VigiloConfigObj(ConfigObj):
             raise ConfigParseError(e, filename)
         else:
             #print "Found '%s', merging." % filename
-            if config.get("include") and os.path.exists(config.get("include")):
-                self.load_file(config.get("include"))
-            self.merge(config)
             self.filenames.append(filename)
+            if config.get("include") and os.path.exists(config.get("include")):
+                if os.path.isdir(config.get("include")):
+                    # On inclut tous les fichiers INI du dossier pointé
+                    # par le motif dans "include" (par ordre alphabétique).
+                    # Les valeurs s'ajoutent, mais en cas de doublon,
+                    # les valeurs du dernier fichier chargé écrasent
+                    # celles des fichiers précédemment chargés.
+                    included_files = glob.glob(os.path.join(
+                                        config.get("include"), '*.ini'))
+                    included_files.sort()
+                    for included_file in included_files:
+                        self.load_file(included_file)
+                else:
+                    self.load_file(config.get("include"))
+            self.merge(config)
 
     def load_module(self, module=None, basename="settings.ini"):
         """
@@ -286,4 +302,3 @@ def main():
 
 if __name__ == '__main__':
     sys.exit(main())
-

@@ -13,8 +13,7 @@ import shutil
 # Import from io if we target 2.6
 from cStringIO import StringIO
 
-from vigilo.common.conf import settings
-
+from vigilo.common.conf import settings, ConfigParseError
 
 
 class Conf(unittest.TestCase):
@@ -41,6 +40,7 @@ class Conf(unittest.TestCase):
 
 
     def test_loading_with_semicolons_as_comments(self):
+        """Point-virgule comme début de commentaire."""
         self.load_conf_from_string("""
 [section]
 ; pre-member comment
@@ -55,6 +55,7 @@ key=value ; inline comment
 
 
     def test_cmdline(self):
+        """Utilisation du script CLI vigilo-config."""
         # Normally called from the command line, this is just for test coverage
         # See the memcached runit service for command-line use.
         self.load_conf_from_string(
@@ -88,7 +89,7 @@ key=value ; inline comment
 
 
     def test_include(self):
-        """Directive "include" """
+        """Directive "include" : cas simple."""
         conffile1 = os.path.join(self.tmpdir, "test-1.ini")
         conffile2 = os.path.join(self.tmpdir, "test-2.ini")
         conf1 = open(conffile1, "w")
@@ -103,7 +104,7 @@ key=value ; inline comment
 
 
     def test_include_2_levels(self):
-        """Directive "include" sur deux niveaux"""
+        """Directive "include" : sur deux niveaux."""
         conffile1 = os.path.join(self.tmpdir, "test-1.ini")
         conffile2 = os.path.join(self.tmpdir, "test-2.ini")
         conffile3 = os.path.join(self.tmpdir, "test-3.ini")
@@ -122,7 +123,7 @@ key=value ; inline comment
 
 
     def test_include_overload(self):
-        """Directive "include": surcharge des valeurs """
+        """Directive "include" : surcharge des valeurs."""
         conffile1 = os.path.join(self.tmpdir, "test-1.ini")
         conffile2 = os.path.join(self.tmpdir, "test-2.ini")
         conf1 = open(conffile1, "w")
@@ -134,3 +135,56 @@ key=value ; inline comment
         settings.load_file(conffile1)
         self.assertTrue("section" in settings)
         self.assertEqual(settings["section"].get("key"), "value1")
+
+    def test_include_directory(self):
+        """Directive "include" : chargement d'un dossier."""
+        conffile0 = os.path.join(self.tmpdir, "test.ini")
+        os.mkdir(os.path.join(self.tmpdir, "conf.d"))
+        conffile1 = os.path.join(self.tmpdir, "conf.d", "test-1.ini")
+        conffile2 = os.path.join(self.tmpdir, "conf.d", "test-2.ini")
+        conf0 = open(conffile0, "w")
+        conf0.write("include = %s" % os.path.join(self.tmpdir, "conf.d"))
+        conf0.close()
+        conf1 = open(conffile1, "w")
+        conf1.write("[section]\nkey1=value1\n")
+        conf1.close()
+        conf2 = open(conffile2, "w")
+        conf2.write("[section]\nkey2=value2\n")
+        conf2.close()
+        settings.load_file(conffile0)
+        self.assertTrue("section" in settings)
+        self.assertEqual(settings["section"].get("key1"), "value1")
+        self.assertEqual(settings["section"].get("key2"), "value2")
+
+    def test_include_directory_overload(self):
+        """Directive "include" : surcharge lors du chargement d'un dossier."""
+        conffile0 = os.path.join(self.tmpdir, "test.ini")
+        os.mkdir(os.path.join(self.tmpdir, "conf.d"))
+        conffile1 = os.path.join(self.tmpdir, "conf.d", "test-1.ini")
+        conffile2 = os.path.join(self.tmpdir, "conf.d", "test-2.ini")
+        conf0 = open(conffile0, "w")
+        conf0.write("include = %s" % os.path.join(self.tmpdir, "conf.d"))
+        conf0.close()
+        conf1 = open(conffile1, "w")
+        conf1.write("[section]\nkey=value1\n")
+        conf1.close()
+        conf2 = open(conffile2, "w")
+        conf2.write("[section]\nkey=value2\n")
+        conf2.close()
+        settings.load_file(conffile0)
+        self.assertTrue("section" in settings)
+        # La valeur correspond à celle indiquée
+        # dans le dernier fichier chargé.
+        self.assertEqual(settings["section"].get("key"), "value2")
+
+    def test_include_loop(self):
+        """Directive "include" : boucle."""
+        conffile1 = os.path.join(self.tmpdir, "test-1.ini")
+        conffile2 = os.path.join(self.tmpdir, "test-2.ini")
+        conf1 = open(conffile1, "w")
+        conf1.write("include = %s" % conffile2)
+        conf1.close()
+        conf2 = open(conffile2, "w")
+        conf2.write("include = %s" % conffile1)
+        conf2.close()
+        self.assertRaises(ConfigParseError, settings.load_file, conffile1)
