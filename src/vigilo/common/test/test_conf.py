@@ -179,10 +179,6 @@ key=value ; inline comment
 
     def test_include_loop(self):
         """Directive "include" : boucle."""
-        # @FIXME: Ne fonctionne pas correctement : la plupart des modules
-        # essayent de charger plusieurs fois les fichiers de configuration,
-        # en particulier au niveau des tests unitaires.
-        return
         conffile1 = os.path.join(self.tmpdir, "test-1.ini")
         conffile2 = os.path.join(self.tmpdir, "test-2.ini")
         conf1 = open(conffile1, "w")
@@ -191,4 +187,19 @@ key=value ; inline comment
         conf2 = open(conffile2, "w")
         conf2.write("include = %s" % conffile1)
         conf2.close()
-        self.assertRaises(ConfigParseError, settings.load_file, conffile1)
+        settings.load_file(conffile1)
+        print settings.filenames
+        self.assertEqual(len(settings.filenames), 2)
+
+    def test_reload_and_load_twice(self):
+        """Chargement de la conf deux fois V.S. utilisation de reload()"""
+        conffile = os.path.join(self.tmpdir, "test.ini")
+        conf = open(conffile, "w")
+        conf.write("[section]\nkey=value\n")
+        conf.close()
+        settings.load_file(conffile)
+        settings["section"]["key"] = "othervalue"
+        settings.load_file(conffile) # ne change rien, fichier déjà chargé
+        self.assertEqual(settings["section"]["key"], "othervalue")
+        settings.reload() # Retour à la valeur d'origine
+        self.assertEqual(settings["section"]["key"], "value")

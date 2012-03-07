@@ -111,6 +111,9 @@ class VigiloConfigObj(ConfigObj):
         """
         Charge un fichier de configuration
         """
+        if filename in self.filenames:
+            return # Double appel à load_file, ou boucle d'include
+
         configspec = filename[:-4] + '.spec'
         try:
             if os.path.exists(configspec):
@@ -132,6 +135,7 @@ class VigiloConfigObj(ConfigObj):
             raise ConfigParseError(e, filename)
         else:
             #print "Found '%s', merging." % filename
+            self.filenames.append(filename)
             if config.get("include") and os.path.exists(config.get("include")):
                 if os.path.isdir(config.get("include")):
                     # On inclut tous les fichiers INI du dossier pointé
@@ -146,7 +150,6 @@ class VigiloConfigObj(ConfigObj):
                         self.load_file(included_file)
                 else:
                     self.load_file(config.get("include"))
-            self.filenames.append(filename)
             self.merge(config)
 
     def load_module(self, module=None, basename="settings.ini"):
@@ -199,6 +202,18 @@ class VigiloConfigObj(ConfigObj):
                 address="/dev/log", facility='daemon'))
             logger.error(_("No configuration file found"))
             raise IOError(_("No configuration file found"))
+
+    def reset(self):
+        super(VigiloConfigObj, self).reset()
+        self.filenames = []
+
+    def reload(self):
+        previous_filenames = self.filenames[:]
+        self.reset()
+        for filename in previous_filenames:
+            self.load_file(filename)
+
+
 
 
 settings = VigiloConfigObj(None, file_error=True, raise_errors=True,
