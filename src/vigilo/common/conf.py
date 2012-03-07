@@ -136,20 +136,28 @@ class VigiloConfigObj(ConfigObj):
         else:
             #print "Found '%s', merging." % filename
             self.filenames.append(filename)
-            if config.get("include") and os.path.exists(config.get("include")):
-                if os.path.isdir(config.get("include")):
-                    # On inclut tous les fichiers INI du dossier pointé
-                    # par le motif dans "include" (par ordre alphabétique).
-                    # Les valeurs s'ajoutent, mais en cas de doublon,
-                    # les valeurs du dernier fichier chargé écrasent
-                    # celles des fichiers précédemment chargés.
-                    included_files = glob.glob(os.path.join(
-                                        config.get("include"), '*.ini'))
-                    included_files.sort()
-                    for included_file in included_files:
-                        self.load_file(included_file)
-                else:
-                    self.load_file(config.get("include"))
+            if "include" in config.sections:
+                includes = config["include"].as_list("include")
+                for include in includes:
+                    if not include:
+                        # cas d'une valeur vide que le as_list traduit en ['']
+                        continue
+                    if not os.path.exists(include):
+                        print "Can't find included file: %s" % include
+                        continue
+                    if os.path.isdir(include):
+                        # On inclut tous les fichiers INI du dossier pointé
+                        # par le motif dans "include" (par ordre alphabétique).
+                        # Les valeurs s'ajoutent, mais en cas de doublon,
+                        # les valeurs du dernier fichier chargé écrasent
+                        # celles des fichiers précédemment chargés.
+                        included_files = glob.glob(os.path.join(
+                                                   include, '*.ini'))
+                        included_files.sort()
+                        for included_file in included_files:
+                            self.load_file(included_file)
+                    else:
+                        self.load_file(include)
             self.merge(config)
 
     def load_module(self, module=None, basename="settings.ini"):

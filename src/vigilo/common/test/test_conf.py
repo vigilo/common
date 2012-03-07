@@ -93,7 +93,7 @@ key=value ; inline comment
         conffile1 = os.path.join(self.tmpdir, "test-1.ini")
         conffile2 = os.path.join(self.tmpdir, "test-2.ini")
         conf1 = open(conffile1, "w")
-        conf1.write("include = %s" % conffile2)
+        conf1.write("[include]\ninclude = %s" % conffile2)
         conf1.close()
         conf2 = open(conffile2, "w")
         conf2.write("[section]\nkey=value\n")
@@ -109,10 +109,10 @@ key=value ; inline comment
         conffile2 = os.path.join(self.tmpdir, "test-2.ini")
         conffile3 = os.path.join(self.tmpdir, "test-3.ini")
         conf1 = open(conffile1, "w")
-        conf1.write("include = %s" % conffile2)
+        conf1.write("[include]\ninclude = %s" % conffile2)
         conf1.close()
         conf2 = open(conffile2, "w")
-        conf2.write("include = %s" % conffile3)
+        conf2.write("[include]\ninclude = %s" % conffile3)
         conf2.close()
         conf3 = open(conffile3, "w")
         conf3.write("[section]\nkey=value\n")
@@ -127,7 +127,8 @@ key=value ; inline comment
         conffile1 = os.path.join(self.tmpdir, "test-1.ini")
         conffile2 = os.path.join(self.tmpdir, "test-2.ini")
         conf1 = open(conffile1, "w")
-        conf1.write("include = %s\n[section]\nkey=value1" % conffile2)
+        conf1.write("[include]\ninclude = %s\n[section]\nkey=value1"
+                    % conffile2)
         conf1.close()
         conf2 = open(conffile2, "w")
         conf2.write("[section]\nkey=value2\n")
@@ -136,6 +137,47 @@ key=value ; inline comment
         self.assertTrue("section" in settings)
         self.assertEqual(settings["section"].get("key"), "value1")
 
+
+    def test_include_list(self):
+        """Directive "include" : utilisation d'une liste."""
+        conffile1 = os.path.join(self.tmpdir, "test-1.ini")
+        conffile2 = os.path.join(self.tmpdir, "test-2.ini")
+        conffile3 = os.path.join(self.tmpdir, "test-3.ini")
+        conf1 = open(conffile1, "w")
+        conf1.write("[include]\ninclude = %s, %s" % (conffile2, conffile3))
+        conf1.close()
+        conf2 = open(conffile2, "w")
+        conf2.write("[section]\nkey=value\n")
+        conf2.close()
+        conf3 = open(conffile3, "w")
+        conf3.write("[section]\nkey2=value2\n")
+        conf3.close()
+        settings.load_file(conffile1)
+        self.assertTrue("section" in settings)
+        self.assertEqual(settings["section"].get("key"), "value")
+        self.assertTrue(conffile2 in settings.filenames)
+        self.assertEqual(settings["section"].get("key2"), "value2")
+        self.assertTrue(conffile3 in settings.filenames)
+
+
+    def test_include_empty_list(self):
+        """Directive "include" : utilisation d'une liste vide."""
+        conffile1 = os.path.join(self.tmpdir, "test-1.ini")
+        conf1 = open(conffile1, "w")
+        conf1.write("[include]\ninclude = ")
+        conf1.close()
+        settings.load_file(conffile1)
+
+
+    def test_include_nonexistant_file(self):
+        """Directive "include" : fichier non existant."""
+        conffile1 = os.path.join(self.tmpdir, "test-1.ini")
+        conf1 = open(conffile1, "w")
+        conf1.write("[include]\ninclude = /nonexistant")
+        conf1.close()
+        settings.load_file(conffile1)
+
+
     def test_include_directory(self):
         """Directive "include" : chargement d'un dossier."""
         conffile0 = os.path.join(self.tmpdir, "test.ini")
@@ -143,7 +185,8 @@ key=value ; inline comment
         conffile1 = os.path.join(self.tmpdir, "conf.d", "test-1.ini")
         conffile2 = os.path.join(self.tmpdir, "conf.d", "test-2.ini")
         conf0 = open(conffile0, "w")
-        conf0.write("include = %s" % os.path.join(self.tmpdir, "conf.d"))
+        conf0.write("[include]\ninclude = %s"
+                    % os.path.join(self.tmpdir, "conf.d"))
         conf0.close()
         conf1 = open(conffile1, "w")
         conf1.write("[section]\nkey1=value1\n")
@@ -154,7 +197,10 @@ key=value ; inline comment
         settings.load_file(conffile0)
         self.assertTrue("section" in settings)
         self.assertEqual(settings["section"].get("key1"), "value1")
+        self.assertTrue(conffile1 in settings.filenames)
         self.assertEqual(settings["section"].get("key2"), "value2")
+        self.assertTrue(conffile2 in settings.filenames)
+
 
     def test_include_directory_overload(self):
         """Directive "include" : surcharge lors du chargement d'un dossier."""
@@ -163,7 +209,8 @@ key=value ; inline comment
         conffile1 = os.path.join(self.tmpdir, "conf.d", "test-1.ini")
         conffile2 = os.path.join(self.tmpdir, "conf.d", "test-2.ini")
         conf0 = open(conffile0, "w")
-        conf0.write("include = %s" % os.path.join(self.tmpdir, "conf.d"))
+        conf0.write("[include]\ninclude = %s"
+                    % os.path.join(self.tmpdir, "conf.d"))
         conf0.close()
         conf1 = open(conffile1, "w")
         conf1.write("[section]\nkey=value1\n")
@@ -177,19 +224,21 @@ key=value ; inline comment
         # dans le dernier fichier chargé.
         self.assertEqual(settings["section"].get("key"), "value2")
 
+
     def test_include_loop(self):
         """Directive "include" : boucle."""
         conffile1 = os.path.join(self.tmpdir, "test-1.ini")
         conffile2 = os.path.join(self.tmpdir, "test-2.ini")
         conf1 = open(conffile1, "w")
-        conf1.write("include = %s" % conffile2)
+        conf1.write("[include]\ninclude = %s" % conffile2)
         conf1.close()
         conf2 = open(conffile2, "w")
-        conf2.write("include = %s" % conffile1)
+        conf2.write("[include]\ninclude = %s" % conffile1)
         conf2.close()
         settings.load_file(conffile1)
         print settings.filenames
         self.assertEqual(len(settings.filenames), 2)
+
 
     def test_reload_and_load_twice(self):
         """Chargement de la conf deux fois V.S. utilisation de reload()"""
