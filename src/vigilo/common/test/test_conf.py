@@ -13,7 +13,7 @@ import shutil
 # Import from io if we target 2.6
 from cStringIO import StringIO
 
-from vigilo.common.conf import settings, ConfigParseError
+from vigilo.common.conf import settings
 
 
 class Conf(unittest.TestCase):
