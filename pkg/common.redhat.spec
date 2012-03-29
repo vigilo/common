@@ -23,7 +23,6 @@ BuildRequires:   python26-babel
 Requires:   python26-babel >= 0.9.4
 Requires:   python26-distribute
 Requires:   python26-configobj
-Requires:   python26-networkx
 
 
 %description

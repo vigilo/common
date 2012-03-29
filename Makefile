@@ -1,4 +1,5 @@
 NAME := common
+EPYDOC_PARSE := networkx
 all: build
 
 include buildenv/Makefile.common

@@ -17,7 +17,6 @@ BuildRequires:   python-babel
 Requires:   python-babel >= 0.9.4
 Requires:   python-distribute
 Requires:   python-configobj
-Requires:   python-networkx
 
 
 %description
