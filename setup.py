@@ -41,6 +41,7 @@ setup(name='vigilo-common',
             'Babel >= 0.9.4',
             'setuptools',
             'configobj',
+            'networkx',
             ],
         extras_require={
             'tests': tests_require,
