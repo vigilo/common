@@ -1,6 +1,7 @@
 # vim: set fileencoding=utf-8 sw=4 ts=4 et :
 # Copyright (C) 2006-2011 CS-SI
 # License: GNU GPL v2 <http://www.gnu.org/licenses/gpl-2.0.html>
+"""Tests portant sur la gestion de la configuration."""
 
 from __future__ import absolute_import
 
@@ -13,16 +14,20 @@ import shutil
 # Import from io if we target 2.6
 from cStringIO import StringIO
 
-from vigilo.common.conf import settings, ConfigParseError
+from vigilo.common.conf import settings
+from vigilo.common.logging import fileConfig
 
 
 class Conf(unittest.TestCase):
+    """Tests sur la gestion de la configuration."""
 
     def setUp(self):
+        """Préparatifs avant chaque test."""
         settings.reset()
         self.tmpdir = tempfile.mkdtemp(prefix="vigilo-common-tests-")
 
     def tearDown(self):
+        """Nettoyage après chaque test."""
         shutil.rmtree(self.tmpdir)
         try:
             del os.environ["VIGILO_SETTINGS"]
@@ -31,6 +36,10 @@ class Conf(unittest.TestCase):
 
 
     def load_conf_from_string(self, data):
+        """
+        Chargement d'une configuration à partir
+        d'une chaîne de caractères.
+        """
         conffile = os.path.join(self.tmpdir, "test.ini")
         conf = open(conffile, "w")
         conf.write(data)
@@ -252,3 +261,36 @@ key=value ; inline comment
         self.assertEqual(settings["section"]["key"], "othervalue")
         settings.reload() # Retour à la valeur d'origine
         self.assertEqual(settings["section"]["key"], "value")
+
+    def test_multiline_options(self):
+        """Valeur d'une option qui occupe plusieurs lignes."""
+        self.load_conf_from_string("""
+[section]
+key='''Cette valeur
+se trouve
+sur plusieurs lignes'''
+""")
+        self.assertEqual(settings["section"].get("key"), """Cette valeur
+se trouve
+sur plusieurs lignes""")
+        # Le chargement d'un fichier contenant des valeurs multi-lignes
+        # ne doit pas perturber le fonctionnement du module de logs.
+        fileConfig()
+
+    def test_args_in_non_logging_config(self):
+        """
+        Option 'args' en dehors de la configuration des journaux.
+
+        Lorsqu'elle utilisée en dehors de la configuration d'un handler
+        lors de la configuration des journaux, la détection automatique
+        des listes doit être appliquée à l'option "args".
+        """
+        self.load_conf_from_string("""
+[section]
+; La clé ressemble à une configuration de handler dans les logs,
+; mais ce n'en est pas une. Donc ici on doit obtenir une liste
+; contenant 2 valeurs : "(sys.stdout" et ")".
+args=(sys.stdout, )
+""")
+        expected = ['(sys.stdout', ')']
+        self.assertEqual(settings["section"].get("args"), expected)
