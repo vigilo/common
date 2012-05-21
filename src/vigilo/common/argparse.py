@@ -2,7 +2,7 @@
 # Copyright (C) 2006-2012 CS-SI
 # License: GNU GPL v2 <http://www.gnu.org/licenses/gpl-2.0.html>
 """
-Intégration de argparse dans Vigilo.
+Intégration de argparse et optparse pour Vigilo.
 """
 from __future__ import absolute_import
 import gettext
@@ -45,3 +45,20 @@ def prepare_argparse():
     _('%s: error: %s\n')
     _('show this help message and exit')
     _("show program's version number and exit")
+
+    # Traductions supplémentaires liées au module optparse.
+    _('Usage: %s\n')
+    _('Usage')
+    _('no such option: %s')
+    _('ambiguous option: %s (%s?)')
+    _('integer')
+    _('long integer')
+    _('floating-point')
+    _('complex')
+    _("option %s: invalid %s value: %r")
+    _("option %s: invalid choice: %r (choose from %s)")
+    _("%prog [options]")
+    _("%s option requires an argument")
+    _("%s option requires %d arguments")
+    _("%s option does not take a value")
+    _('Options')

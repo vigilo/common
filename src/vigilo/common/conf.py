@@ -64,7 +64,6 @@ __all__ = ( 'settings', )
 
 # pylint: disable-msg=C0103
 
-
 class ConfigParseError(ParseError):
     """
     Exception utilisée lorsqu'une erreur se produit au chargement
@@ -87,6 +86,62 @@ class ConfigParseError(ParseError):
         """
         return '%s (file being parsed: %s)' % (self.ex, self.filename)
 
+# W0212: Access to a protected member FOO of a client class
+# pylint: disable-msg=W0212
+class _SectionWrapper(object):
+    """
+    Un wrapper autour de l'attribut _sectionmarker de la classe
+    configobj.ConfigObj permettant de conserver la trace du nom
+    de la section en cours de lecture.
+    """
+
+    def __init__(self):
+        """Initialisation"""
+        self._pattern = ConfigObj._sectionmarker
+        self.section_name = None
+
+    def match(self, *args, **kwargs):
+        """
+        Applique le motif régulier et retourne un objet contenant
+        les correspondances éventuellement trouvées.
+        """
+        res = self._pattern.match(*args, **kwargs)
+        if res is not None:
+            self.section_name = None
+            # res est de la forme :
+            # (indent, sect_open, sect_name, sect_close, comment)
+            (sect_open, sect_name, sect_close) = res.groups()[1:-1]
+            depth = sect_open.count('[')
+            if depth == 1 and sect_close.count(']') == depth:
+                self.section_name = sect_name
+        return res
+
+# W0212: Access to a protected member FOO of a client class
+# pylint: disable-msg=W0212
+class _KeywordWrapper(object):
+    """
+    Un wrapper autour de l'attribut _keyword de la classe
+    configobj.ConfigObj permettant de conserver la trace
+    du nom de la clé en cours de lecture.
+    """
+
+    def __init__(self):
+        """Initialisation"""
+        self._pattern = ConfigObj._keyword
+        self.key_name = None
+
+    def match(self, *args, **kwargs):
+        """
+        Applique le motif régulier et retourne un objet contenant
+        les correspondances éventuellement trouvées.
+        """
+        self.key_name = None
+        res = self._pattern.match(*args, **kwargs)
+        if res is not None:
+            # res est de la forme (indent, key, value)
+            self.key_name = res.groups()[1]
+        return res
+
 class VigiloConfigObj(ConfigObj):
     """
     Une classe permettant de gérer la configuration de Vigilo.
@@ -106,6 +161,11 @@ class VigiloConfigObj(ConfigObj):
         './%s',
     ]
     filenames = []
+
+    # Wrappers autour de ConfigObj pour désactiver la détection des listes
+    # pour la clé "args" dans la configuration d'un handler.
+    _sectionmarker = _SectionWrapper()
+    _keyword = _KeywordWrapper()
 
     def load_file(self, filename):
         """
@@ -221,7 +281,24 @@ class VigiloConfigObj(ConfigObj):
         for filename in previous_filenames:
             self.load_file(filename)
 
-
+    # pylint: disable-msg=W0201
+    # W0201: Attribute 'foo' defined outside __init__
+    # self.list_values est défini dans ConfigObj._initialise.
+    def _handle_value(self, value):
+        """
+        Désactive la détection des listes pour le paramètre
+        "args" des ""handler_*" dans la configuration des logs.
+        """
+        section = self._sectionmarker.section_name
+        key = self._keyword.key_name
+        temp_list_values = self.list_values
+        if section is not None and \
+            section.startswith('handler_') and \
+            key == "args":
+            self.list_values = False
+        res = super(VigiloConfigObj, self)._handle_value(value)
+        self.list_values = temp_list_values
+        return res
 
 
 settings = VigiloConfigObj(None, file_error=True, raise_errors=True,
