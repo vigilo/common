@@ -232,7 +232,8 @@ def _install_loggers(handlers, disable_existing_loggers):
         if len(hlist):
             hlist = _strip_spaces(hlist)
             for hand in hlist:
-                logger.addHandler(handlers[hand])
+                if hand:
+                    logger.addHandler(handlers[hand])
 
     #Disable any old loggers. There's no point deleting
     #them as other threads may continue to hold references
