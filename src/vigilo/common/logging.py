@@ -267,7 +267,10 @@ def get_logger(name, silent_load=False):
         LOGGER = get_logger(__name__)
     """
     global PLUGINS_LOADED # pylint: disable-msg=W0603
-    if not PLUGINS_LOADED:
+    # Le test sur la présence de loggers permet de gérer certains cas
+    # où les loggers sont créés avant qu'une configuration des logs
+    # n'ait pu être chargée (cf. #1057).
+    if (not PLUGINS_LOADED) and settings.get('loggers'):
         PLUGINS_LOADED = True
 
         # On configure les logs depuis le(s) fichier(s) de configuration.
