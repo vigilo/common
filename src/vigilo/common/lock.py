@@ -13,7 +13,7 @@ LOGGER = get_logger(__name__)
 from vigilo.common.gettext import translate
 _ = translate(__name__)
 
-__all__ = ("grab_lock", )
+__all__ = ("grab_lock", "delete_lock")
 
 
 def grab_lock(lockfile):
