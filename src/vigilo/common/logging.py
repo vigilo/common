@@ -86,6 +86,12 @@ def _create_formatters():
     for form in flist:
         sectname = "formatter_%s" % form
         opts = settings.get(sectname, {})
+        # vigilo.common.conf dispose d'un hack afin que la valeur
+        # des options "format" et "datefmt" dans les sections dont
+        # le nom commence par "formatter_" ne soit pas interprétée.
+        # Ce hack est nécessaire pour pouvoir gérer correctement
+        # une valeur contenant des virgules dans le fichier de
+        # configuration.
         if "format" in opts:
             fs = opts.get("format", 1)
         else:

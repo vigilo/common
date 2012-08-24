@@ -292,10 +292,11 @@ class VigiloConfigObj(ConfigObj):
         section = self._sectionmarker.section_name
         key = self._keyword.key_name
         temp_list_values = self.list_values
-        if section is not None and \
-            section.startswith('handler_') and \
-            key == "args":
-            self.list_values = False
+        if section is not None:
+            if (section.startswith('handler_') and key == "args") or \
+                (section.startswith('formatter_') and
+                key in ("format", "datefmt")):
+                self.list_values = False
         res = super(VigiloConfigObj, self)._handle_value(value)
         self.list_values = temp_list_values
         return res
