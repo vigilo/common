@@ -6,6 +6,7 @@
 from __future__ import absolute_import
 
 import gettext # pylint: disable-msg=W0406
+from pkg_resources import resource_filename
 
 __all__ = ("translate", "translate_narrow", "l_")
 
@@ -17,6 +18,11 @@ def _translate_module(module_name):
     # module_name (which include the filename we don't want)
     parts = module_name.strip().split('.')
     if parts:
+        # Cas particulier des scripts dans les IHM web (TurboGears).
+        if parts[0] != 'vigilo' and parts[0].startswith('vigi'):
+            localedir = resource_filename(parts[0], 'i18n')
+            return gettext.translation(parts[0], localedir=localedir,
+                                       fallback=True)
         module_name = '-'.join(parts[0:2]).replace('_', '-')
     return gettext.translation(module_name, fallback=True)
 
