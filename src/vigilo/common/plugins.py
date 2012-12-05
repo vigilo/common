@@ -10,6 +10,7 @@ Permet notamment de lister les extensions d'une application.
 import sys
 from pkg_resources import working_set
 from optparse import OptionParser
+from vigilo.common.argparse import prepare_argparse
 from vigilo.common.gettext import translate
 
 _ = translate(__name__)
@@ -20,6 +21,7 @@ def main():
     'vigilo-plugins'.
     Cet utilitaire permet de lister le contenu d'un point d'entrée.
     """
+    prepare_argparse()
     parser = OptionParser()
     parser.add_option('-p', '--provider', action="store_true",
         dest="display_provider", default=False,
@@ -27,11 +29,29 @@ def main():
                 "which provides this feature."))
 
     opts, args = parser.parse_args()
+    # Sans argument, liste les noms des groupes de points d'entrée
+    # se rapportant à Vigilo.
     if not args:
-        sys.exit(-1)
+        groups = {}
+        vigilo_groups = ('vigilo.', 'vigiadmin.', 'vigiboard.', 'vigiconf.',
+                         'vigigraph.', 'vigimap.', 'vigirrd.')
+        for distro in working_set:
+            for group in distro.get_entry_map().keys():
+                if group.startswith(vigilo_groups):
+                    groups.setdefault(group, [])
+                    groups[group].append(
+                        distro.project_name + ' ' + distro.version)
+        print _("Available entry-points groups:")
+        for group in sorted(list(groups)):
+            print "-", group,
+            if opts.display_provider:
+                print "--", _("Provided by:"), \
+                      ", ".join(sorted(groups[group])),
+            print
+        sys.exit(0)
 
     for ep in working_set.iter_entry_points(args[0]):
-        print repr(ep.name),
+        print "-", ep.name,
         if opts.display_provider:
             print "--", _("Provided by:"), ep.dist,
         print

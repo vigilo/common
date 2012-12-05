@@ -6,10 +6,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: vigilo-common 2.0.16\n"
+"Project-Id-Version: vigilo-common 3.0.0\n"
 "Report-Msgid-Bugs-To: contact@projet-vigilo.org\n"
-"POT-Creation-Date: 2012-05-09 11:55+0200\n"
-"PO-Revision-Date: 2012-05-09 11:55+0200\n"
+"POT-Creation-Date: 2012-12-05 11:39+0100\n"
+"PO-Revision-Date: 2012-12-05 11:39+0100\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: en <LL@li.org>\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
@@ -18,189 +18,189 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 0.9.4\n"
 
-#: src/vigilo/common/argparse.py:34
+#: src/vigilo/common/argparse.py:31
 msgid "usage: "
 msgstr "usage: "
 
-#: src/vigilo/common/argparse.py:35
+#: src/vigilo/common/argparse.py:32
 #, python-format
 msgid "conflicting option string(s): %s"
 msgstr "conflicting option string(s): %s"
 
-#: src/vigilo/common/argparse.py:36
+#: src/vigilo/common/argparse.py:33
 msgid "subcommands"
 msgstr "subcommands"
 
-#: src/vigilo/common/argparse.py:37
+#: src/vigilo/common/argparse.py:34
 #, python-format
 msgid "unrecognized arguments: %s"
 msgstr "unrecognized arguments: %s"
 
-#: src/vigilo/common/argparse.py:38
+#: src/vigilo/common/argparse.py:35
 msgid "expected one argument"
 msgstr "expected one argument"
 
-#: src/vigilo/common/argparse.py:39
+#: src/vigilo/common/argparse.py:36
 msgid "expected at most one argument"
 msgstr "expected at most one argument"
 
-#: src/vigilo/common/argparse.py:40
+#: src/vigilo/common/argparse.py:37
 msgid "expected at least one argument"
 msgstr "expected at least one argument"
 
-#: src/vigilo/common/argparse.py:41
+#: src/vigilo/common/argparse.py:38
 #, python-format
 msgid "expected %s argument(s)"
 msgstr "expected %s argument(s)"
 
-#: src/vigilo/common/argparse.py:42
+#: src/vigilo/common/argparse.py:39
 #, python-format
 msgid "invalid choice: %r (choose from %s)"
 msgstr "invalid choice: %r (choose from %s)"
 
-#: src/vigilo/common/argparse.py:43
+#: src/vigilo/common/argparse.py:40
 msgid "positional arguments"
 msgstr "positional arguments"
 
-#: src/vigilo/common/argparse.py:44
+#: src/vigilo/common/argparse.py:41
 msgid "optional arguments"
 msgstr "optional arguments"
 
-#: src/vigilo/common/argparse.py:45
+#: src/vigilo/common/argparse.py:42
 msgid "too few arguments"
 msgstr "too few arguments"
 
-#: src/vigilo/common/argparse.py:46
+#: src/vigilo/common/argparse.py:43
 #, python-format
 msgid "argument %s is required"
 msgstr "argument %s is required"
 
-#: src/vigilo/common/argparse.py:47
+#: src/vigilo/common/argparse.py:44
 #, python-format
 msgid "one of the arguments %s is required"
 msgstr "one of the arguments %s is required"
 
-#: src/vigilo/common/argparse.py:48
+#: src/vigilo/common/argparse.py:45
 #, python-format
 msgid "%s: error: %s\n"
 msgstr "%s: error: %s\n"
 
-#: src/vigilo/common/argparse.py:49
+#: src/vigilo/common/argparse.py:46
 msgid "show this help message and exit"
 msgstr "show this help message and exit"
 
-#: src/vigilo/common/argparse.py:50
+#: src/vigilo/common/argparse.py:47
 msgid "show program's version number and exit"
 msgstr "show program's version number and exit"
 
-#: src/vigilo/common/argparse.py:53
+#: src/vigilo/common/argparse.py:50
 #, python-format
 msgid "Usage: %s\n"
 msgstr "Usage: %s\n"
 
-#: src/vigilo/common/argparse.py:54
+#: src/vigilo/common/argparse.py:51
 msgid "Usage"
 msgstr "Usage"
 
-#: src/vigilo/common/argparse.py:55
+#: src/vigilo/common/argparse.py:52
 #, python-format
 msgid "no such option: %s"
 msgstr "no such option: %s"
 
-#: src/vigilo/common/argparse.py:56
+#: src/vigilo/common/argparse.py:53
 #, python-format
 msgid "ambiguous option: %s (%s?)"
 msgstr "ambiguous option: %s (%s?)"
 
-#: src/vigilo/common/argparse.py:57
+#: src/vigilo/common/argparse.py:54
 msgid "integer"
 msgstr "integer"
 
-#: src/vigilo/common/argparse.py:58
+#: src/vigilo/common/argparse.py:55
 msgid "long integer"
 msgstr "long integer"
 
-#: src/vigilo/common/argparse.py:59
+#: src/vigilo/common/argparse.py:56
 msgid "floating-point"
 msgstr "floating-point"
 
-#: src/vigilo/common/argparse.py:60
+#: src/vigilo/common/argparse.py:57
 msgid "complex"
 msgstr "complex"
 
-#: src/vigilo/common/argparse.py:61
+#: src/vigilo/common/argparse.py:58
 #, python-format
 msgid "option %s: invalid %s value: %r"
 msgstr "option %s: invalid %s value: %r"
 
-#: src/vigilo/common/argparse.py:62
+#: src/vigilo/common/argparse.py:59
 #, python-format
 msgid "option %s: invalid choice: %r (choose from %s)"
 msgstr "option %s: invalid choice: %r (choose from %s)"
 
-#: src/vigilo/common/argparse.py:63
+#: src/vigilo/common/argparse.py:60
 msgid "%prog [options]"
 msgstr "%prog [options]"
 
-#: src/vigilo/common/argparse.py:64
+#: src/vigilo/common/argparse.py:61
 #, python-format
 msgid "%s option requires an argument"
 msgstr "%s option requires an argument"
 
-#: src/vigilo/common/argparse.py:65
+#: src/vigilo/common/argparse.py:62
 #, python-format
 msgid "%s option requires %d arguments"
 msgstr "%s option requires %d arguments"
 
-#: src/vigilo/common/argparse.py:66
+#: src/vigilo/common/argparse.py:63
 #, python-format
 msgid "%s option does not take a value"
 msgstr "%s option does not take a value"
 
-#: src/vigilo/common/argparse.py:67
+#: src/vigilo/common/argparse.py:64
 msgid "Options"
 msgstr "Options"
 
-#: src/vigilo/common/conf.py:211 src/vigilo/common/conf.py:212
+#: src/vigilo/common/conf.py:271 src/vigilo/common/conf.py:272
 msgid "No configuration file found"
 msgstr "No configuration file found"
 
-#: src/vigilo/common/conf.py:269
+#: src/vigilo/common/conf.py:347
 #, python-format
 msgid "Skipping \"%(item)s\": (version conflict \"%(error)s\")"
 msgstr "Skipping \"%(item)s\": (version conflict \"%(error)s\")"
 
-#: src/vigilo/common/conf.py:273
+#: src/vigilo/common/conf.py:351
 #, python-format
 msgid "Skipping \"%(item)s\": (unknown extra \"%(error)s\")"
 msgstr "Skipping \"%(item)s\": (unknown extra \"%(error)s\")"
 
-#: src/vigilo/common/conf.py:276
+#: src/vigilo/common/conf.py:354
 #, python-format
 msgid "Skipping \"%(item)s\": (can't import \"%(error)s\")"
 msgstr "Skipping \"%(item)s\": (can't import \"%(error)s\")"
 
-#: src/vigilo/common/conf.py:279
+#: src/vigilo/common/conf.py:357
 #, python-format
 msgid "Skipping \"%(item)s\": (error \"%(error)s\")"
 msgstr "Skipping \"%(item)s\": (error \"%(error)s\")"
 
-#: src/vigilo/common/conf.py:305
+#: src/vigilo/common/conf.py:383
 #, python-format
 msgid "No such file: %s"
 msgstr "No such file: %s"
 
-#: src/vigilo/common/conf.py:314
+#: src/vigilo/common/conf.py:392
 #, python-format
 msgid "No such section: %s"
 msgstr "No such section: %s"
 
-#: src/vigilo/common/conf.py:317
+#: src/vigilo/common/conf.py:395
 #, python-format
 msgid "No such key: %s"
 msgstr "No such key: %s"
 
-#: src/vigilo/common/lock.py:32
+#: src/vigilo/common/lock.py:31
 #, python-format
 msgid ""
 "Can't obtain lock on lockfile (%(lockfile)s). Application already "
@@ -209,7 +209,7 @@ msgstr ""
 "Can't obtain lock on lockfile (%(lockfile)s). Application already "
 "running? REASON: %(error)s"
 
-#: src/vigilo/common/plugins.py:26
+#: src/vigilo/common/plugins.py:28
 msgid ""
 "Displays the name and location of the Python package which provides this "
 "feature."
@@ -217,7 +217,11 @@ msgstr ""
 "Displays the name and location of the Python package which provides this "
 "feature."
 
-#: src/vigilo/common/plugins.py:36
+#: src/vigilo/common/plugins.py:44
+msgid "Available entry-points groups:"
+msgstr "Available entry-points groups:"
+
+#: src/vigilo/common/plugins.py:48 src/vigilo/common/plugins.py:56
 msgid "Provided by:"
 msgstr "Provided by:"
 
