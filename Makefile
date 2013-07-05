@@ -6,7 +6,8 @@ include buildenv/Makefile.common.python
 install: $(PYTHON) build
 	$(PYTHON) setup.py install --record=INSTALLED_FILES
 install_pkg: $(PYTHON) build
-	$(PYTHON) setup.py install --single-version-externally-managed --root=$(DESTDIR)
+	$(PYTHON) setup.py install --single-version-externally-managed \
+		$(SETUP_PY_OPTS) --root=$(DESTDIR)
 
 lint: lint_pylint
 tests: tests_nose
