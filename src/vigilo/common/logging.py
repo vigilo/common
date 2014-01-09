@@ -341,6 +341,18 @@ class VigiloFormatter(logging.Formatter):
         else:
             record.multiprocessName = current_process().name
 
+        # Ajoute le nom de l'application courante de Vigilo.
+        # Le nom sera "???" lorsqu'il ne peut pas être déterminé.
+        try:
+            from tg import config
+            app_name = getattr(config, 'app_name', '???')
+        except ImportError:
+            app_name = '???'
+        if app_name != '???':
+            # On transforme le nom en "vigilo-vigiboard" par exemple.
+            app_name = 'vigilo-%s' % app_name.lower()
+        record.vigilo_app = app_name
+
         t = logging.Formatter.format(self, record)
         if type(t) in [types.UnicodeType]:
             t = t.encode(self.encoding, 'replace')
