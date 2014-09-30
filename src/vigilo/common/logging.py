@@ -8,7 +8,7 @@ Sets up logging, with twisted and multiprocessing integration.
 """
 from __future__ import absolute_import
 
-import os.path, sys, types
+import os.path, sys
 import logging, logging.config # pylint: disable-msg=W0406
 import warnings
 
@@ -320,7 +320,7 @@ class VigiloFormatter(logging.Formatter):
 
     def formatException(self, ei):
         r = logging.Formatter.formatException(self, ei)
-        if type(r) in [types.StringType]:
+        if isinstance(r, str):
             r = r.decode(self.encoding, 'replace') # Convert to unicode
         return r
 
@@ -328,6 +328,21 @@ class VigiloFormatter(logging.Formatter):
         """
         Formatte l'enregistrement à journaliser en prenant soin
         d'adapter l'encoding si nécessaire.
+        Cette méthode injecte également certaines informations
+        dans l'enregistrement lorsqu'elle le peut. Les informations
+        injectées sont :
+        -   Nom du processus (processName)
+        -   Vrai nom du processus en cas d'utilisation
+            du module C{multiprocessing} (multiprocessName)
+        -   L'identifiant de l'utilisateur connecté (user_login)
+        -   Le nom complet de l'utilisateur connecté (user_fullname)
+        -   L'adresse IP de l'utilisateur connecté (user_ip)
+        -   Le nom de l'application manipulée (vigilo_app)
+
+        @param record: Enregistrement de journalisation à formatter.
+        @type record: L{LogRecord<https://docs.python.org/2/library/logging.html#logging.LogRecord>}
+        @return: Message formatté représentant le contenu de l'enregistrement.
+        @rtype: C{str}
         """
         # On préfèrerait utiliser une classe qui hérite de Logger
         # pour éviter de faire ces opérations pour chaque message
@@ -341,20 +356,45 @@ class VigiloFormatter(logging.Formatter):
         else:
             record.multiprocessName = current_process().name
 
-        # Ajoute le nom de l'application courante de Vigilo.
-        # Le nom sera "???" lorsqu'il ne peut pas être déterminé.
+
+        # Ajoute des infos liées à l'environnement de l'IHM web.
+        # Chaque champ vaudra "???" si la valeur ne peut être déterminée
+        # et si les arguments du log ne spécifient pas non plus de valeur.
+        fields = {
+            'user_login': '???',
+            'user_fullname': '???',
+            'user_ip': '???',
+        }
+
+        try:
+            from tg import request
+            fields['user_ip'] = request.remote_addr
+            if getattr(request, 'identity', None):
+                fields['user_login'] = request.identity['repoze.who.userid']
+                fields['user_fullname'] = request.identity['user'].fullname
+        except (ImportError, TypeError):
+            # Une exception "TypeError" est levée lorsqu'aucune requête HTTP
+            # n'est disponible dans le contexte d'exécution courant,
+            # par exemple pour les logs concernant les requêtes SQL.
+            pass
+
+        for field in fields:
+            if not hasattr(record, field):
+                setattr(record, field, fields[field])
+
+
+        # Ajoute le nom de l'IHM manipulée dans "vigilo_app".
+        record.app_name = '???'
         try:
             from tg import config
-            app_name = getattr(config, 'app_name', '???')
+            if hasattr(config, 'app_name'):
+                record.vigilo_app = 'vigilo-%s' % \
+                    getattr(config, 'app_name').lower()
         except ImportError:
-            app_name = '???'
-        if app_name != '???':
-            # On transforme le nom en "vigilo-vigiboard" par exemple.
-            app_name = 'vigilo-%s' % app_name.lower()
-        record.vigilo_app = app_name
+            pass
 
         t = logging.Formatter.format(self, record)
-        if type(t) in [types.UnicodeType]:
+        if isinstance(t, unicode):
             t = t.encode(self.encoding, 'replace')
         return t
 
