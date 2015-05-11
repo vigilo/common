@@ -29,6 +29,15 @@ def _translate_module(module_name):
 def translate(module_name):
     """
     Retourne la fonction de traduction de chaînes, qui retourne de l'unicode.
+
+    Cette fonction est à privilégier pour l'usage général (affichage
+    dans les interfaces web, dans les journaux, etc.).
+
+    @param module_name: Nom du module de Vigilo dans lequel les traductions
+        doivent être recherchées.
+    @type module_name: C{str}
+    @return: Fonction de traduction retournant de l'unicode.
+    @rtype: C{function}
     """
     t = _translate_module(module_name)
     return t.ugettext
@@ -36,14 +45,29 @@ def translate(module_name):
 def translate_narrow(module_name):
     """
     Retourne la fonction de traduction de chaînes, qui ne retourne pas
-    d'unicode mais une simple C{str}.
+    d'unicode mais une simple C{str} dans l'encodage du système.
+
+    Cette fonction est à privilégier pour les affichages en ligne de
+    commandes.
+
+    @param module_name: Nom du module de Vigilo dans lequel les traductions
+        doivent être recherchées.
+    @type module_name: C{str}
+    @return: Fonction de traduction retournant des chaînes
+        dans l'encodage du système.
+    @rtype: C{function}
     """
     t = _translate_module(module_name)
-    return t.gettext
+    return t.lgettext
 
 def l_(message):
     """
-    Fonction permettant de marquer les messages
-    comme nécessitant une traduction.
+    Fonction permettant de marquer les messages comme nécessitant
+    une traduction, sans pour autant les traduire.
+
+    @param message: Message à marquer comme nécessitant une traduction.
+    @type message: C{str}
+    @return: Le C{message} original, sans altération.
+    @rtype: C{str}
     """
     return message
