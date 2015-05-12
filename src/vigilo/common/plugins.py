@@ -50,7 +50,8 @@ def main():
             print
         sys.exit(0)
 
-    for ep in working_set.iter_entry_points(args[0]):
+    for ep in sorted(working_set.iter_entry_points(args[0]),
+                     key=lambda x: x.name.lower()):
         print "-", ep.name,
         if opts.display_provider:
             print "--", _("Provided by:"), ep.dist,
