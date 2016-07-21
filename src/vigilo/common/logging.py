@@ -371,7 +371,7 @@ class VigiloFormatter(logging.Formatter):
             fields['user_ip'] = request.remote_addr
             if getattr(request, 'identity', None):
                 fields['user_login'] = request.identity['repoze.who.userid']
-                fields['user_fullname'] = request.identity['user'].fullname
+                fields['user_fullname'] = request.identity['fullname']
         except (ImportError, TypeError):
             # Une exception "TypeError" est levée lorsqu'aucune requête HTTP
             # n'est disponible dans le contexte d'exécution courant,
