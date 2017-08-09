@@ -1,0 +1,1 @@
+common.rhel6.spec
