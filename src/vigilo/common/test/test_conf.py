@@ -3,7 +3,7 @@
 # License: GNU GPL v2 <http://www.gnu.org/licenses/gpl-2.0.html>
 """Tests portant sur la gestion de la configuration."""
 
-from __future__ import absolute_import
+from __future__ import absolute_import, print_function
 
 import runpy
 import os
@@ -245,7 +245,7 @@ key=value ; inline comment
         conf2.write("[include]\ninclude = %s" % conffile1)
         conf2.close()
         settings.load_file(conffile1)
-        print settings.filenames
+        print(settings.filenames)
         self.assertEqual(len(settings.filenames), 2)
 
 

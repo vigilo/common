@@ -44,7 +44,7 @@ We can't import any other Vigilo code here.
 This is because Vigilo code may log or require settings for some other reason.
 """
 
-from __future__ import absolute_import
+from __future__ import absolute_import, print_function
 
 import os
 import sys
@@ -184,17 +184,16 @@ class VigiloConfigObj(ConfigObj):
                 validator = Validator()
                 valid = config.validate(validator)
                 if not valid:
-                    raise SyntaxError, 'Invalid value in configuration'
+                    raise SyntaxError('Invalid value in configuration')
 
             else:
                 config = VigiloConfigObj(filename, file_error=True,
                     raise_errors=True, interpolation=False)
         except IOError:
             pass
-        except ParseError, e:
+        except ParseError as e:
             raise ConfigParseError(e, filename)
         else:
-            #print "Found '%s', merging." % filename
             self.filenames.append(filename)
             if "include" in config.sections:
                 includes = config["include"].as_list("include")
@@ -203,7 +202,7 @@ class VigiloConfigObj(ConfigObj):
                         # cas d'une valeur vide que le as_list traduit en ['']
                         continue
                     if not os.path.exists(include):
-                        print "Can't find included file: %s" % include
+                        print("Can't find included file: %s" % include)
                         continue
                     if os.path.isdir(include):
                         # On inclut tous les fichiers INI du dossier pointé
@@ -251,18 +250,14 @@ class VigiloConfigObj(ConfigObj):
         if env_file:
             filenames.append(env_file)
 
-        #print filenames
         for filename in filenames:
             filename = os.path.expanduser(filename)
             if not os.path.exists(filename):
-                #print "Not found:", filename
                 continue
             self.load_file(filename)
         if not self.filenames:
-            #from vigilo.common.gettext import translate
             import logging as temp_logging
 
-            #_ = translate(__name__)
             logger = temp_logging.getLogger(__name__)
 
             from logging.handlers import SysLogHandler
@@ -380,19 +375,19 @@ def main():
     try:
         for arg in args:
             if not os.path.exists(arg):
-                print _("No such file: %s") % arg
+                print(_("No such file: %s") % arg)
                 return 3
             settings.load_file(arg)
         if not args:
             settings.load_module()
-    except ConfigParseError, e:
-        print >> sys.stderr, e
+    except ConfigParseError as e:
+        print(e, file=sys.stderr)
         return 4
     if opts.section not in settings:
-        print >> sys.stderr, _("No such section: %s") % opts.section
+        print(_("No such section: %s") % opts.section, file=sys.stderr)
         return 1
     if opts.get not in settings[opts.section]:
-        print >> sys.stderr, _("No such key: %s") % opts.get
+        print(_("No such key: %s") % opts.get, file=sys.stderr)
         return 1
     val = settings[opts.section][opts.get]
     sys.stdout.write('%s\n' % val)

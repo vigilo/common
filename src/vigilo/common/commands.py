@@ -79,7 +79,7 @@ class identity_catalog(Command):
 
         try:
             self._locale = Locale.parse(self.locale)
-        except UnknownLocaleError, e:
+        except UnknownLocaleError as e:
             raise DistutilsOptionError(e)
 
         if not os.path.exists(os.path.dirname(self.output_file)):

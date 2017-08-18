@@ -27,7 +27,7 @@ def grab_lock(lockfile):
     try:
         LOGGER.debug("Acquiring the lock.")
         fcntl.flock(f, fcntl.LOCK_EX | fcntl.LOCK_NB)
-    except IOError, e:
+    except IOError as e:
         LOGGER.error(_("Can't obtain lock on lockfile (%(lockfile)s). "
                        "Application already running? REASON: %(error)s"),
                      { 'lockfile': f.name, 'error': e })

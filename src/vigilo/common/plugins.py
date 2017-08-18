@@ -6,6 +6,7 @@
 Affiche les éléments appartenant à un point d'entrée.
 Permet notamment de lister les extensions d'une application.
 """
+from __future__ import print_function
 
 import sys
 from pkg_resources import working_set
@@ -41,21 +42,21 @@ def main():
                     groups.setdefault(group, [])
                     groups[group].append(
                         distro.project_name + ' ' + distro.version)
-        print _("Available entry-points groups:")
+        print(_("Available entry-points groups:"))
         for group in sorted(list(groups)):
-            print "-", group,
+            print("-", group, end=' ')
             if opts.display_provider:
-                print "--", _("Provided by:"), \
-                      ", ".join(sorted(groups[group])),
-            print
+                print("--", _("Provided by:"), \
+                      ", ".join(sorted(groups[group])), end='')
+            print()
         sys.exit(0)
 
     for ep in sorted(working_set.iter_entry_points(args[0]),
                      key=lambda x: x.name.lower()):
-        print "-", ep.name,
+        print("-", ep.name, end=' ')
         if opts.display_provider:
-            print "--", _("Provided by:"), ep.dist,
-        print
+            print("--", _("Provided by:"), ep.dist, end='')
+        print()
     sys.exit(0)
 
 
