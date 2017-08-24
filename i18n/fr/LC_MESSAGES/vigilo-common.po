@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version:  vigilo.common\n"
 "Report-Msgid-Bugs-To: contact.vigilo@c-s.fr\n"
 "POT-Creation-Date: 2010-02-16 10:06+0100\n"
-"PO-Revision-Date: 2012-12-05 11:39+0100\n"
+"PO-Revision-Date: 2017-08-24 12:13+0200\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
 "Plural-Forms: nplurals=2; plural=(n > 1)\n"
@@ -160,41 +160,41 @@ msgstr "l'option %s ne prend pas d'argument"
 msgid "Options"
 msgstr "Options"
 
-#: src/vigilo/common/conf.py:271 src/vigilo/common/conf.py:272
+#: src/vigilo/common/conf.py:266 src/vigilo/common/conf.py:267
 msgid "No configuration file found"
 msgstr "Fichier de configuration introuvable"
 
-#: src/vigilo/common/conf.py:347
+#: src/vigilo/common/conf.py:342
 #, python-format
 msgid "Skipping \"%(item)s\": (version conflict \"%(error)s\")"
 msgstr "\"%(item)s\" ignoré : conflit de version \"%(error)s\""
 
-#: src/vigilo/common/conf.py:351
+#: src/vigilo/common/conf.py:346
 #, python-format
 msgid "Skipping \"%(item)s\": (unknown extra \"%(error)s\")"
 msgstr "\"%(item)s\" ignoré : extrat inconnu \"%(error)s\""
 
-#: src/vigilo/common/conf.py:354
+#: src/vigilo/common/conf.py:349
 #, python-format
 msgid "Skipping \"%(item)s\": (can't import \"%(error)s\")"
 msgstr "\"%(item)s\" ignoré : impossible d'importer \"%(error)s\""
 
-#: src/vigilo/common/conf.py:357
+#: src/vigilo/common/conf.py:352
 #, python-format
 msgid "Skipping \"%(item)s\": (error \"%(error)s\")"
 msgstr "\"%(item)s\" ignoré : erreur \"%(error)s\""
 
-#: src/vigilo/common/conf.py:383
+#: src/vigilo/common/conf.py:378
 #, python-format
 msgid "No such file: %s"
 msgstr "Fichier inexistant : %s"
 
-#: src/vigilo/common/conf.py:392
+#: src/vigilo/common/conf.py:387
 #, python-format
 msgid "No such section: %s"
 msgstr "Section inexistante : %s"
 
-#: src/vigilo/common/conf.py:395
+#: src/vigilo/common/conf.py:390
 #, python-format
 msgid "No such key: %s"
 msgstr "Entrée inexistante : %s"
@@ -208,7 +208,7 @@ msgstr ""
 "Impossible d'obtenir un verrou sur le fichier (%(lockfile)s). "
 "L'application est-elle déjà en fonctionnement ? RAISON : %(error)s"
 
-#: src/vigilo/common/plugins.py:28
+#: src/vigilo/common/plugins.py:29
 msgid ""
 "Displays the name and location of the Python package which provides this "
 "feature."
@@ -216,11 +216,11 @@ msgstr ""
 "Affiche le nom et l'emplacement du paquet Python qui fournit cette "
 "fonctionnalité."
 
-#: src/vigilo/common/plugins.py:44
+#: src/vigilo/common/plugins.py:45
 msgid "Available entry-points groups:"
 msgstr "Groupes de points d'entrée disponibles :"
 
-#: src/vigilo/common/plugins.py:48 src/vigilo/common/plugins.py:56
+#: src/vigilo/common/plugins.py:49 src/vigilo/common/plugins.py:58
 msgid "Provided by:"
 msgstr "Fournit par :"
 

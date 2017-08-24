@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version:  vigilo.common\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
 "POT-Creation-Date: 2010-11-19 11:41+0100\n"
-"PO-Revision-Date: 2012-12-05 11:39+0100\n"
+"PO-Revision-Date: 2017-08-24 12:13+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: de <LL@li.org>\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
@@ -160,41 +160,41 @@ msgstr ""
 msgid "Options"
 msgstr ""
 
-#: src/vigilo/common/conf.py:271 src/vigilo/common/conf.py:272
+#: src/vigilo/common/conf.py:266 src/vigilo/common/conf.py:267
 msgid "No configuration file found"
 msgstr "Es wurde keine Konfigurationsdatei gefunden"
 
-#: src/vigilo/common/conf.py:347
+#: src/vigilo/common/conf.py:342
 #, python-format
 msgid "Skipping \"%(item)s\": (version conflict \"%(error)s\")"
 msgstr ""
 
-#: src/vigilo/common/conf.py:351
+#: src/vigilo/common/conf.py:346
 #, python-format
 msgid "Skipping \"%(item)s\": (unknown extra \"%(error)s\")"
 msgstr ""
 
-#: src/vigilo/common/conf.py:354
+#: src/vigilo/common/conf.py:349
 #, python-format
 msgid "Skipping \"%(item)s\": (can't import \"%(error)s\")"
 msgstr ""
 
-#: src/vigilo/common/conf.py:357
+#: src/vigilo/common/conf.py:352
 #, python-format
 msgid "Skipping \"%(item)s\": (error \"%(error)s\")"
 msgstr ""
 
-#: src/vigilo/common/conf.py:383
+#: src/vigilo/common/conf.py:378
 #, python-format
 msgid "No such file: %s"
 msgstr ""
 
-#: src/vigilo/common/conf.py:392
+#: src/vigilo/common/conf.py:387
 #, python-format
 msgid "No such section: %s"
 msgstr ""
 
-#: src/vigilo/common/conf.py:395
+#: src/vigilo/common/conf.py:390
 #, python-format
 msgid "No such key: %s"
 msgstr ""
@@ -206,17 +206,17 @@ msgid ""
 "running? REASON: %(error)s"
 msgstr ""
 
-#: src/vigilo/common/plugins.py:28
+#: src/vigilo/common/plugins.py:29
 msgid ""
 "Displays the name and location of the Python package which provides this "
 "feature."
 msgstr ""
 
-#: src/vigilo/common/plugins.py:44
+#: src/vigilo/common/plugins.py:45
 msgid "Available entry-points groups:"
 msgstr ""
 
-#: src/vigilo/common/plugins.py:48 src/vigilo/common/plugins.py:56
+#: src/vigilo/common/plugins.py:49 src/vigilo/common/plugins.py:58
 msgid "Provided by:"
 msgstr ""
 

@@ -1,15 +1,15 @@
 # English translations for vigilo-common.
-# Copyright (C) 2012 ORGANIZATION
+# Copyright (C) 2017 ORGANIZATION
 # This file is distributed under the same license as the vigilo-common
 # project.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2012.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2017.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: vigilo-common 3.0.0\n"
+"Project-Id-Version: vigilo-common 4.1.0rc2\n"
 "Report-Msgid-Bugs-To: contact.vigilo@c-s.fr\n"
-"POT-Creation-Date: 2012-12-05 11:39+0100\n"
-"PO-Revision-Date: 2012-12-05 11:39+0100\n"
+"POT-Creation-Date: 2017-08-24 12:13+0200\n"
+"PO-Revision-Date: 2017-08-24 12:13+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: en <LL@li.org>\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
@@ -161,41 +161,41 @@ msgstr "%s option does not take a value"
 msgid "Options"
 msgstr "Options"
 
-#: src/vigilo/common/conf.py:271 src/vigilo/common/conf.py:272
+#: src/vigilo/common/conf.py:266 src/vigilo/common/conf.py:267
 msgid "No configuration file found"
 msgstr "No configuration file found"
 
-#: src/vigilo/common/conf.py:347
+#: src/vigilo/common/conf.py:342
 #, python-format
 msgid "Skipping \"%(item)s\": (version conflict \"%(error)s\")"
 msgstr "Skipping \"%(item)s\": (version conflict \"%(error)s\")"
 
-#: src/vigilo/common/conf.py:351
+#: src/vigilo/common/conf.py:346
 #, python-format
 msgid "Skipping \"%(item)s\": (unknown extra \"%(error)s\")"
 msgstr "Skipping \"%(item)s\": (unknown extra \"%(error)s\")"
 
-#: src/vigilo/common/conf.py:354
+#: src/vigilo/common/conf.py:349
 #, python-format
 msgid "Skipping \"%(item)s\": (can't import \"%(error)s\")"
 msgstr "Skipping \"%(item)s\": (can't import \"%(error)s\")"
 
-#: src/vigilo/common/conf.py:357
+#: src/vigilo/common/conf.py:352
 #, python-format
 msgid "Skipping \"%(item)s\": (error \"%(error)s\")"
 msgstr "Skipping \"%(item)s\": (error \"%(error)s\")"
 
-#: src/vigilo/common/conf.py:383
+#: src/vigilo/common/conf.py:378
 #, python-format
 msgid "No such file: %s"
 msgstr "No such file: %s"
 
-#: src/vigilo/common/conf.py:392
+#: src/vigilo/common/conf.py:387
 #, python-format
 msgid "No such section: %s"
 msgstr "No such section: %s"
 
-#: src/vigilo/common/conf.py:395
+#: src/vigilo/common/conf.py:390
 #, python-format
 msgid "No such key: %s"
 msgstr "No such key: %s"
@@ -209,7 +209,7 @@ msgstr ""
 "Can't obtain lock on lockfile (%(lockfile)s). Application already "
 "running? REASON: %(error)s"
 
-#: src/vigilo/common/plugins.py:28
+#: src/vigilo/common/plugins.py:29
 msgid ""
 "Displays the name and location of the Python package which provides this "
 "feature."
@@ -217,11 +217,11 @@ msgstr ""
 "Displays the name and location of the Python package which provides this "
 "feature."
 
-#: src/vigilo/common/plugins.py:44
+#: src/vigilo/common/plugins.py:45
 msgid "Available entry-points groups:"
 msgstr "Available entry-points groups:"
 
-#: src/vigilo/common/plugins.py:48 src/vigilo/common/plugins.py:56
+#: src/vigilo/common/plugins.py:49 src/vigilo/common/plugins.py:58
 msgid "Provided by:"
 msgstr "Provided by:"
 
