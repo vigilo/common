@@ -73,10 +73,10 @@ args=(sys.stdout, )
 
         # Le logger doit avoir le bon niveau, le bon nombre d'handlers
         # et surtout le handler doit avoir la bonne configuration de flux.
-        self.assertEquals(logger.level, logging.DEBUG)
-        self.assertEquals(len(logger.handlers), 1)
+        self.assertEqual(logger.level, logging.DEBUG)
+        self.assertEqual(len(logger.handlers), 1)
         handler = logger.handlers[0]
         self.assertTrue(isinstance(handler, logging.StreamHandler),
                         handler.__class__.__name__)
-        self.assertEquals(handler.level, logging.INFO)
-        self.assertEquals(handler.stream, sys.stdout)
+        self.assertEqual(handler.level, logging.INFO)
+        self.assertEqual(handler.stream, sys.stdout)
