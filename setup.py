@@ -10,6 +10,7 @@ tests_require = [
     'coverage',
     'nose',
     'pylint',
+    'Babel == 0.9.4',
 ]
 
 def install_i18n(i18ndir, destdir):
