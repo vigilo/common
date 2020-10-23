@@ -1,34 +1,27 @@
 Vigilo Common
 =============
 
-La bibliothèque "common" regroupe les fonctions transverses à Vigilo_,
+La bibliothèque "vigilo-common" regroupe les fonctions transverses à Vigilo_,
 notamment le chargement de fichiers de configuration, la journalisation,
 l'internationalisation, etc.
 
 
 Dépendances
 -----------
-Vigilo nécessite une version de Python supérieure ou égale à 2.5. Le chemin de
-l'exécutable python peut être passé en paramètre du ``make install`` de la
-façon suivante::
+Vigilo nécessite une version de Python supérieure ou égale à 2.7.
 
-    make install PYTHON=/usr/bin/python2.6
-
-La bibliothèque "common" a besoin des modules python suivants :
+La bibliothèque "vigilo-common" a besoin des modules python suivants :
 
 - Babel >= 0.9.4
-- setuptools (ou distribute)
-- configobj (à patcher)
+- setuptools
+- configobj
 - networkx
-
-Un patch est nécessaire pour le module configobj, il se trouve dans le dossier
-"patches" (il a été remonté au projet).
 
 
 Installation
 ------------
-L'installation se fait par la commande ``make install`` (à exécuter en
-``root``).
+L'installation se fait par la commande ``python setup.py install``
+(depuis le compte ``root``).
 
 
 License

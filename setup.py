@@ -46,6 +46,7 @@ setup(name='vigilo-common',
         extras_require={
             'tests': tests_require,
             },
+        test_suite='nose.collector',
         namespace_packages = [
             'vigilo',
             ],
