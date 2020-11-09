@@ -63,6 +63,7 @@ setup(name='vigilo-common',
             ],
             'distutils.commands': [
                 'identity_catalog = vigilo.common.commands:identity_catalog',
+                'compile_catalog_js = vigilo.common.commands:compile_catalog_plusjs',
             ],
         },
         package_dir={'': 'src'},
