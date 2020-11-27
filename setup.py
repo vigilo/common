@@ -6,6 +6,21 @@
 import os, sys
 from setuptools import setup, find_packages
 
+try:
+    from distutils.command.build import build as orig_build
+except ImportError:
+    cmdclass = {}
+else:
+    class build(orig_build):
+        def has_i18n(self):
+            return getattr(self.distribution, 'message_extractors', None)
+
+        sub_commands = orig_build.sub_commands + [
+            ('compile_catalog', has_i18n),
+        ]
+    cmdclass = {'build': build}
+
+
 tests_require = [
     'coverage',
     'nose',
@@ -65,7 +80,11 @@ setup(name='vigilo-common',
                 'identity_catalog = vigilo.common.commands:identity_catalog',
                 'compile_catalog_js = vigilo.common.commands:compile_catalog_plusjs',
             ],
+            'distutils.setup_keywords': [
+                'vigilo_build_vars = vigilo.common.commands:validate_build_vars',
+            ],
         },
         package_dir={'': 'src'},
+        cmdclass=cmdclass,
         data_files=install_i18n("i18n", os.path.join(sys.prefix, 'share', 'locale'))
         )
