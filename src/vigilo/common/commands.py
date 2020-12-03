@@ -74,9 +74,9 @@ class build(orig_build):
     def has_i18n(self):
         return getattr(self.distribution, 'message_extractors', None)
 
-    sub_commands = orig_build.sub_commands + [
+    sub_commands = [
         ('compile_catalog', has_i18n),
-    ]
+    ] + orig_build.sub_commands
 
 
 class install(orig_install):
